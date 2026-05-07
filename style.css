@@ -133,7 +133,7 @@ select {
 
 @media (max-width: 600px) {
     body {
-        justify-content: flex-start;
+        justify-content: center;
         align-items: stretch;
         padding: 0;
         background: #F9F6EE;
@@ -148,16 +148,26 @@ select {
     }
 
     .card {
+        box-sizing: border-box;
         width: 100%;
         min-height: 100dvh;
         border: none;
-        border-radius: 0;
+        border-radius: 28px 28px 0 0;
         box-shadow: none;
-        padding: 18px 14px 28px;
+        border-width: 4px;
+        padding: 24px 18px;
+        min-height: 85vh;
 
         display: flex;
         flex-direction: column;
-        justify-content: flex-start;
+        justify-content: space-between;
+    }
+    .card content {
+        flex: 1;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
     }
 
     .selector-row {
