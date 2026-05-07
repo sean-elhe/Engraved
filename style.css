@@ -1,47 +1,46 @@
 body {
     margin: 0;
-
     min-height: 100dvh;
-    
+
     display: flex;
     flex-direction: column;
-
     justify-content: center;
     align-items: center;
+
     background: #888;
     padding: 16px;
     box-sizing: border-box;
 
-    /* gap: 20px;
-    background-color: gray;    */
     color: black;
-    font-family: "EB Garamond", sans-serif;
+    font-family: "EB Garamond", serif;
     font-size: 18px;
 }
 
 h1 {
     font-size: 32px;
     font-family: sans-serif;
+    margin: 18px 0;
 }
 
 button {
-  margin-top: 15px;
-  padding: 2px 15px;
+    margin-top: 15px;
+    padding: 4px 16px;
 
-  border: 1px solid black;
-  border-radius: 999px;
+    border: 1px solid black;
+    border-radius: 999px;
 
-  background-color: white;
-  color: black;
+    background-color: white;
+    color: black;
 
-  font-size: 14px;
-  cursor: pointer;
+    font-size: 14px;
+    cursor: pointer;
 }
 
 .selector-row {
     display: flex;
     flex-direction: row;
-    gap: 12px;
+    flex-wrap: wrap;
+    gap: 8px;
     justify-content: center;
     align-items: center;
 }
@@ -57,16 +56,19 @@ button {
 
 .nav-row {
     display: flex;
+    flex-wrap: wrap;
     gap: 12px;
     justify-content: center;
     margin-bottom: 15px;
 }
 
-.select {
-    padding: 10px 14px;
-    border: 1px solid black rounded;
-    border-radius: 12px;
+.select,
+select {
+    padding: 6px 8px;
+    border: 1px solid black;
+    border-radius: 8px;
     font-size: 16px;
+    max-width: 100%;
 }
 
 .card {
@@ -75,8 +77,8 @@ button {
     padding: 32px;
     border-radius: 24px;
 
-    width: 90%;
-    max-width: 500px;
+    width: min(90vw, 500px);
+    box-sizing: border-box;
 
     text-align: center;
 
@@ -90,7 +92,7 @@ button {
     background: transparent;
     color: black;
     text-align: center;
-    font-family: EB Garamond, serif;
+    font-family: "EB Garamond", serif;
     font-size: 18px;
     outline: none;
     margin: 0 4px;
@@ -106,15 +108,15 @@ button {
 }
 
 .correctWord {
-  color: #7298C7;
-  font-weight: bold;
-  text-decoration: underline;
+    color: #7298C7;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
 .wrongWord {
-  color: #80011F;
-  font-weight: bold;
-  text-decoration: underline;
+    color: #80011F;
+    font-weight: bold;
+    text-decoration: underline;
 }
 
 .hidden {
@@ -131,43 +133,93 @@ button {
 
 @media (max-width: 600px) {
     body {
-        align-items: flex-start;
-        padding: 12px;
-        background: #f7f3ea;
+        justify-content: flex-start;
+        align-items: stretch;
+        padding: 0;
+        background: #F9F6EE;
+        font-size: 18px;
     }
+
     .app {
         width: 100%;
-        min-height: calc(100dvh - 24px);
-        border-radius: 18px;
-        box-shadow: none;
-        border: none;
+        min-height: 100dvh;
+        padding: 0;
+        border-radius: 0;
     }
-    .controls {
+
+    .card {
+        width: 100%;
+        min-height: 100dvh;
+        border: none;
+        border-radius: 0;
+        box-shadow: none;
+        padding: 18px 14px 28px;
+
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+    }
+
+    .selector-row {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 8px;
-    }
-    .controls select {
         width: 100%;
+    }
+
+    .selector-row select,
+    .selector-row .select {
+        width: 100%;
+        min-width: 0;
         font-size: 16px;
         padding: 8px;
+        box-sizing: border-box;
     }
+
+    .progress-row {
+        width: 100%;
+        gap: 8px;
+        margin-top: 18px;
+    }
+
+    #verseProgress {
+        flex: 1;
+        min-width: 0;
+    }
+
     h1 {
-        font-size: 20px;
+        font-size: 28px;
+        line-height: 1.15;
         text-align: center;
+        margin: 22px 0 14px;
     }
-    .verse-line {
-        font-size: 18px;
+
+    .verse-line,
+    #verseText {
+        font-size: 20px;
         line-height: 1.7;
         text-align: center;
     }
-    .buttons {
+
+    .verseInput {
+        width: 72px;
+        font-size: 20px;
+    }
+
+    .nav-row {
         display: grid;
         grid-template-columns: repeat(3, 1fr);
         gap: 10px;
+        width: 100%;
+        margin-top: 22px;
     }
-    .buttons button {
+
+    .nav-row button,
+    button {
         min-height: 44px;
+        margin-top: 0;
+        padding: 8px 12px;
         font-size: 18px;
+        touch-action: manipulation;
     }
 }
