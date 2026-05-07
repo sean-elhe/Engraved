@@ -1,0 +1,63 @@
+<head>
+  <title>Engraved</title>
+
+  <link rel="stylesheet" href="style.css">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
+</head>
+
+<body>
+  <main id="practiceScreen" class="card">
+
+    <div class="selector-row">
+      <select id="bookSelect"></select>
+      <select id="chapterSelect"></select>
+      <select id="translationSelect"></select>
+      <select id="difficultySelect"></select>
+      <select id="modeSelect">
+        <option value="ordered">Ordered</option>
+        <option value="random">Random</option>
+      </select>
+    </div>
+
+    <div class="progress-row">
+        <span id="progressCurrent"></span>
+        <progress id="progressBar" value="0" max="100"></progress>
+        <span id="progressTotal"></span>
+    </div>
+
+    <h1 id="reference"></h1>
+
+    <p id="verseText">
+    </p>
+
+    <div class="nav-row">
+       <button id="prevBtn"><</button>
+       <button id="submitBtn">!</button>
+       <button id="refreshBtn">?</button>
+       <button id="nextBtn">></button>
+       <button id="hintBtn">*</button>
+       <button id="clearBtn">/</button>
+    </div>
+
+  </main>
+
+  <main id="scoreScreen" class="card hidden">
+    <h1 id="scoreHeader"></h1>
+
+    <p id="scoreText"></p>
+    <p id="translation">Translation: </p>
+    <p id="difficulty">Difficulty: </p>
+    <p id="hints">Hints used: </p>
+    
+
+
+    <div id="verseScoreList"></div>
+
+    <button id="restartBtn"><></button>
+  </main>
+
+  <script src="js/script.js"></script>
+</body>
