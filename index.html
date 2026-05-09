@@ -1,9 +1,11 @@
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+
   <title>Engraved</title>
 
   <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -13,16 +15,39 @@
 <body>
   <main id="practiceScreen" class="card">
 
-    <div class="selector-row">
-      <select id="bookSelect"></select>
-      <select id="chapterSelect"></select>
-      <select id="translationSelect"></select>
-      <select id="difficultySelect"></select>
-      <select id="modeSelect">
-        <option value="ordered">Ordered</option>
-        <option value="random">Random</option>
-      </select>
-    </div>
+    <div class="top-row">
+
+        <button id="openSettings" class="icon-btn settings-open">
+            <i class="fa-solid fa-gear"></i>
+        </button>
+
+        <div id="settingsOverlay" class="overlay hidden">
+          <div class="settings-popup">
+
+            <button id="closeSettings" class="icon-btn close-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <h2>Settings</h2>
+
+              <div class="selectors">
+                <select id="bookSelect"></select>
+                <select id="chapterSelect"></select>
+                <select id="translationSelect"></select>
+                <select id="difficultySelect"></select>
+                <select id="modeSelect"></select>
+              </div>
+
+          </div>
+        </div>
+
+        <h2 id="reference"></h1>
+
+        <button id="logIn" class="icon-btn logIn">
+            <i class="fa-solid fa-user-lock"></i>
+        </button>
+
+    </div> 
 
     <div class="progress-row">
         <span id="progressCurrent"></span>
@@ -30,18 +55,28 @@
         <span id="progressTotal"></span>
     </div>
 
-    <h1 id="reference"></h1>
-
     <p id="verseText">
     </p>
 
     <div class="nav-row">
-       <button id="prevBtn"><</button>
-       <button id="submitBtn">!</button>
-       <button id="refreshBtn">?</button>
-       <button id="nextBtn">></button>
-       <button id="hintBtn">*</button>
-       <button id="clearBtn">/</button>
+       <button id="prevBtn">
+          <i class="fa-solid fa-backward-step"></i>
+       </button>
+       <button id="submitBtn">
+          <i class="fa-solid fa-flag-checkered"></i>
+       </button>
+       <button id="refreshBtn">
+          <i class="fa-solid fa-repeat"></i>
+       </button>
+       <button id="nextBtn">
+          <i class="fa-solid fa-arrow-right"></i>
+       </button>
+       <button id="hintBtn">
+          <i class="fa-solid fa-lightbulb"></i>
+       </button>
+       <button id="clearBtn">
+          <i class="fa-solid fa-trash-can"></i>
+       </button>
     </div>
 
   </main>

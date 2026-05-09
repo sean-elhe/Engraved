@@ -22,6 +22,10 @@ h1 {
     margin: 18px 0;
 }
 
+h2 {
+    margin-top: 35px;
+}
+
 button {
     margin-top: 15px;
     padding: 4px 16px;
@@ -45,13 +49,22 @@ button {
     align-items: center;
 }
 
+.top-row {
+    display: flex;
+    flex-direction: row;
+    gap: 50px;
+    justify-content: center;
+    align-items: center;
+    /* flex-wrap: wrap; */
+}
+
 .progress-row {
     display: flex;
     flex-direction: row;
     gap: 12px;
     justify-content: center;
     align-items: center;
-    margin-top: 20px;
+    margin: 12px;
 }
 
 .nav-row {
@@ -73,8 +86,8 @@ select {
 
 .card {
     background-color: #F9F6EE;
-    border: 5px solid black;
-    padding: 32px;
+    border: 4px solid black;
+    padding: 10px;
     border-radius: 24px;
 
     width: min(90vw, 500px);
@@ -120,7 +133,7 @@ select {
 }
 
 .hidden {
-    display: none;
+    display: none !important;
 }
 
 .app {
@@ -130,6 +143,58 @@ select {
     box-sizing: border-box;
     border-radius: 22px;
 }
+
+.overlay {
+    position: fixed;
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    z-index: 1000;
+}
+
+.settings-popup {
+    position: relative;
+    background: #f5f1eb;
+    padding: 24.px;
+    border-radius: 24px;
+    border-radius: 24px;
+    border: 4px solid black;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    min-width: 320px;
+}
+
+.selectors {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+select {
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 16px;
+}
+
+.icon-btn,
+.close-btn {
+    border: none;
+    background: transparent;
+    cursor: pointer;
+    font-size: 24px;
+}
+
+.close-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+}
+
+
 
 @media (max-width: 600px) {
     body {

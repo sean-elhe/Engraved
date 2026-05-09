@@ -631,26 +631,35 @@ document
 
 async function initializeApp() {
     fillDifficultyDropdown();
-
     await loadTranslations();
         selectedTranslation =
         document.getElementById("translationSelect").value;
-
     await loadBooks();
-
     selectedBook = "Psalm";
-
     document.getElementById("bookSelect").value =
         selectedBook;
-
     await loadChapters();
-        
     selectedChapter = 23;
-
     document.getElementById("chapterSelect").value =
         selectedChapter;
-
     await loadChapter();
+
+    const openBtn = document.getElementById("openSettings");
+    const closeBtn = document.getElementById("closeSettings");
+    const overlay = document.getElementById("settingsOverlay");
+
+    openBtn.addEventListener("click", () => {
+        overlay.classList.remove("hidden");
+    });
+    closeBtn.addEventListener("click", () => {
+        overlay.classList.add("hidden")
+    });
+    overlay.addEventListener("click", (event) => {
+        if (event.target === overlay) {
+            overlay.classList.add("hidden")
+        }
+    });
+
 }
 
 initializeApp();
