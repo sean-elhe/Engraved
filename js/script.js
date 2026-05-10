@@ -22,6 +22,9 @@ let selectedTranslation = "ESV";
 let selectedBook = "Genesis";
 let selectedChapter = 1;
 
+let tapTimer;
+
+
 const difficultyLevels = ["Easy", "Medium", "Hard"];
 
 async function loadTranslations() {
@@ -520,91 +523,120 @@ document
         displayCurrentVerse();
     });
 
-document
-    .getElementById("refreshBtn")
-    .addEventListener("click", () => {
-        displayCurrentVerse();
-    });
+
 
 document
     .getElementById("nextBtn")
     .addEventListener("click", () => {
 
-        if (stage === 1) {
-            calculateScore();
-            stage = 2;
-            displayVerseWords();
-            return;
-        }
+        if (tapTimer) {
+            clearTimeout(tapTimer);
+            tapTimer = null;
 
-        if (stage === 2) {
-            if (verseOrderIndex < verseOrder.length - 1) {
-                verseOrderIndex++;
-                stage = 1;
-                displayCurrentVerse();
-            } else {
-                showScoreScreen();
+            showScoreScreen();
+        
+        } else {
+            tapTimer = setTimeout(() => {
+
+            if (stage === 1) {
+                calculateScore();
+                stage = 2;
+                displayVerseWords();
+
+                tapTimer = null;
+                return;
+
             }
-        }
-    });
 
-document
-    .getElementById("prevBtn")
-    .addEventListener("click", () => {
-        verseOrderIndex = 0;
-        resetScore();
-        displayCurrentVerse();
-    });
+            if (stage === 2) {
+                if (verseOrderIndex < verseOrder.length - 1) {
+                    verseOrderIndex++;
+                    stage = 1;
+                    displayCurrentVerse();
 
-document
-    .getElementById("hintBtn")
-    .addEventListener("click", () => {
-        hintCount++;
-
-        if (!selectedInput) {
-            return;
-        }
-
-        const answer =
-            selectedInput.dataset.answer
-                .toLowerCase()
-                .replace(/[^a-z]/g, "");
-
-        const current =
-            selectedInput.value
-                .toLowerCase()
-                .replace(/[^a-z]/g, "");
-
-        if (current.length < answer.length) {
-            const newText =
-                answer.slice(0, current.length + 1);
-
-            selectedInput.value = newText;
-
-            selectedInput.focus();
-
-            selectedInput.setSelectionRange(
-                newText.length,
-                newText.length
-            );
-
-            selectedInput.dispatchEvent(
-                new Event("input")
-            );
+                } else {
+                    showScoreScreen(); 
+                }
+                 tapTimer = null;    
+                }
+            }, 250);
         }
     });
 
 document
     .getElementById("clearBtn")
     .addEventListener("click", () => {
-        clearInputs();
+
+        if (tapTimer) {
+            clearTimeout(tapTimer);
+            tapTimer = null;
+
+            verseOrderIndex = 0;
+            resetScore();
+            displayCurrentVerse();
+
+        } else {
+            tapTimer = setTimeout(() => {
+                clearInputs();
+                tapTimer = null;
+            }, 250);
+        }
     });
 
 document
-    .getElementById("submitBtn")
+    .getElementById("hintBtn")
     .addEventListener("click", () => {
-        showScoreScreen();
+
+        if (tapTimer) {
+            clearTimeout(tapTimer);
+            tapTimer = null;
+
+            displayCurrentVerse();
+
+        } else {
+            tapTimer = setTimeout(() => {
+                hintCount++;
+
+                if (!selectedInput) {
+                    return;
+                }
+
+                const answer =
+                    selectedInput.dataset.answer
+                        .toLowerCase()
+                        .replace(/[^a-z]/g, "");
+
+                const current =
+                    selectedInput.value
+                        .toLowerCase()
+                        .replace(/[^a-z]/g, "");
+
+                if (current.length < answer.length) {
+                    const newText =
+                        answer.slice(0, current.length + 1);
+
+                    selectedInput.value = newText;
+
+                    selectedInput.focus();
+
+                    selectedInput.setSelectionRange(
+                        newText.length,
+                        newText.length
+                    );
+
+                    selectedInput.dispatchEvent(
+                        new Event("input")
+                    );
+                }
+
+                tapTimer = null;
+            }, 250);
+        }
     });
+
+
+
+
 
 document
     .getElementById("restartBtn")
