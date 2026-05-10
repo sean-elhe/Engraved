@@ -40,15 +40,6 @@ button {
     cursor: pointer;
 }
 
-.selector-row {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-}
-
 .top-row {
     display: flex;
     flex-direction: row;
@@ -56,6 +47,17 @@ button {
     justify-content: center;
     align-items: center;
     /* flex-wrap: wrap; */
+}
+
+.menu-header {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+.menu-header h2 {
+    margin-top: 20px;
 }
 
 .progress-row {
@@ -172,6 +174,7 @@ select {
     display: flex;
     flex-direction: column;
     gap: 12px;
+    padding: 12px;
 }
 
 select {
@@ -190,7 +193,7 @@ select {
 
 .close-btn {
     position: absolute;
-    top: 12px;
+    top: 20px;
     right: 12px;
 }
 

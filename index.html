@@ -24,18 +24,23 @@
         <div id="settingsOverlay" class="overlay hidden">
           <div class="settings-popup">
 
-            <button id="closeSettings" class="icon-btn close-btn">
-                <i class="fa-solid fa-xmark"></i>
-            </button>
-
-            <h2>Settings</h2>
+              <div class="menu-header">
+              
+                <h2>Settings</h2>
+                <button id="closeSettings" class="icon-btn close-btn">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
 
               <div class="selectors">
                 <select id="bookSelect"></select>
                 <select id="chapterSelect"></select>
                 <select id="translationSelect"></select>
                 <select id="difficultySelect"></select>
-                <select id="modeSelect"></select>
+                <select id="modeSelect">
+                  <option value="ordered">Sequential</option>
+                  <option value="random">Randomized</option>
+                </select>
               </div>
 
           </div>
