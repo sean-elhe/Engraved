@@ -15,29 +15,7 @@
 <body>
   <main id="practiceScreen" class="card">
 
-    <div class="controls">
-        <button id="clearBtn" class="control-btn">
-            <i class="fa-solid fa-arrow-left"></i>
-        </button>
-
-        <button id="hintBtn" class="control-btn hint-btn">
-            <i class="fa-solid fa-lightbulb"></i>
-        </button>
-
-        <button id="nextBtn" class="control-btn">
-            <i class="fa-solid fa-arrow-right"></i>
-        </button>
-    </div>
-
-    <div class="progress-row">
-        <span id="progressCurrent"></span>
-        <progress id="progressBar" value="0" max="100"></progress>
-        <span id="progressTotal"></span>
-    </div>
-
-    <p id="verseText">
-    </p>
-
+    <div class="bottom">
     <div class="top-row">
 
         <button id="openSettings" class="icon-btn settings-open">
@@ -69,13 +47,43 @@
           </div>
         </div>
 
-        <h2 id="reference"></h1>
+        <h3 id="reference"></h3>
 
         <button id="logIn" class="icon-btn logIn">
             <i class="fa-solid fa-user-lock"></i>
         </button>
 
     </div> 
+        <div class="progress-row">
+        <span id="progressCurrent"></span>
+        <progress id="progressBar" value="0" max="100"></progress>
+        <span id="progressTotal"></span>
+    </div>
+    </div>
+
+    <div class="center">
+    <div class="verse-card">
+      <p id="verseText"></p>
+    </div>
+    </div>  
+
+    <div class="top">
+    <div class="controls">
+        <button id="clearBtn" class="control-btn">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+
+        <button id="hintBtn" class="control-btn hint-btn">
+            <i class="fa-solid fa-lightbulb"></i>
+        </button>
+
+        <button id="nextBtn" class="control-btn">
+            <i class="fa-solid fa-arrow-right"></i>
+        </button>
+    </div>
+
+
+    </div>
 
   </main>
 
