@@ -27,6 +27,8 @@ let tapTimer;
 
 const difficultyLevels = ["Easy", "Medium", "Hard"];
 
+
+
 async function loadTranslations() {
     const response = await fetch("/api/translations");
     const translations = await response.json();
@@ -150,11 +152,14 @@ function displayCurrentVerse() {
 }
 
 function updateProgressBar() {
-    const progressBar =
-        document.getElementById("progressBar");
 
-    progressBar.value = verseOrderIndex;
-    progressBar.max = verseOrder.length;
+    const progressFill =
+        document.getElementById("progressFill");
+
+    const percent =
+        ((verseOrderIndex) / verseOrder.length) * 100;
+
+    progressFill.style.width = `${percent}%`;
 
     document.getElementById("progressCurrent").textContent =
         `${currentChapter.chapter}:${verseOrder[verseOrderIndex].verse}`;
@@ -346,53 +351,126 @@ function calculateScore() {
     });
 }
 
+// function showScoreScreen() {
+//     document.getElementById("practiceScreen")
+//         .classList.add("hidden");
+
+//     document.getElementById("scoreScreen")
+//         .classList.remove("hidden");
+
+//     const overallPercentage = 
+//         ((correctCount / totalHiddenWords) * 100).toFixed(1);
+
+//     const chapterTotalTime =
+//         verseScores.reduce((sum, score) => sum + score.time, 0);
+
+//     document.getElementById("scoreHeader").textContent =
+//         `${book.book} ${currentChapter.chapter}`;
+//     document.getElementById("scoreText").textContent =
+//         `${correctCount}/${totalHiddenWords}
+//         | (${overallPercentage}%)
+//         | ${formatTime(chapterTotalTime)}`;
+
+//     document.getElementById("translation").textContent =
+//         `Translation: ${selectedTranslation}`;
+//     document.getElementById("difficulty").textContent =
+//         `Difficulty: ${document.getElementById("difficultySelect").value}`;
+//     document.getElementById("hints").textContent =
+//         `Hints used: ${hintCount}`;
+
+//     const verseScoreList =
+//         document.getElementById("verseScoreList");
+
+//     verseScoreList.innerHTML = "";
+
+//     verseScores.forEach(score => {
+
+//         const versePercentage =
+//             ((score.correct / score.total) * 100).toFixed(1);
+
+//         verseScoreList.innerHTML += `
+//             <p>
+//                 ${score.chapter}:${score.verse}
+//                 ~
+//                 ${score.correct}/${score.total}
+//                 | (${versePercentage}%)
+//                 | ${formatTime(score.time)}
+//             </p>
+//         `;
+//     });
+// }
+
 function showScoreScreen() {
-    document.getElementById("practiceScreen")
-        .classList.add("hidden");
+  document.getElementById("practiceScreen").classList.add("hidden");
+  document.getElementById("scoreScreen").classList.remove("hidden");
 
-    document.getElementById("scoreScreen")
-        .classList.remove("hidden");
+  
 
-    const overallPercentage = 
-        ((correctCount / totalHiddenWords) * 100).toFixed(1);
+  const chapterTotalTime =
+    verseScores.reduce((sum, score) => sum + score.time, 0);
 
-    const chapterTotalTime =
-        verseScores.reduce((sum, score) => sum + score.time, 0);
+  const percent =
+    totalHiddenWords === 0
+      ? 0
+      : Math.round((correctCount / totalHiddenWords) * 100);
 
-    document.getElementById("scoreHeader").textContent =
-        `${book.book} ${currentChapter.chapter}`;
-    document.getElementById("scoreText").textContent =
-        `${correctCount}/${totalHiddenWords}
-        | (${overallPercentage}%)
-        | ${formatTime(chapterTotalTime)}`;
 
-    document.getElementById("translation").textContent =
-        `Translation: ${selectedTranslation}`;
-    document.getElementById("difficulty").textContent =
-        `Difficulty: ${document.getElementById("difficultySelect").value}`;
-    document.getElementById("hints").textContent =
-        `Hints used: ${hintCount}`;
+    chapterScore.innerHTML+= `
+    <div class="chapter-score">
+        <div class="chapter-score-top">
+            <span class="chapter-score-title">${book.book} ${currentChapter.chapter}</span>
+            <span class="chapter-score-percent">${percent}%</span>
+        </div>
+        
+        <div class="chapter-score-meta">
+            <span>${correctCount} / ${totalHiddenWords}</span>
+            <span>${formatTime(chapterTotalTime)}</span>
+        </div>
+        
+        <div class="big-progress">
+            <div class="big-progress-fill" style="width: "></div>
+        </div>
+    </div>
+    `;
 
-    const verseScoreList =
-        document.getElementById("verseScoreList");
 
-    verseScoreList.innerHTML = "";
+  document.getElementById("translation").textContent =
+    selectedTranslation;
 
-    verseScores.forEach(score => {
+  document.getElementById("difficulty").textContent =
+    document.getElementById("difficultySelect").value;
 
-        const versePercentage =
-            ((score.correct / score.total) * 100).toFixed(1);
+  document.getElementById("hints").textContent =
+    hintCount;
 
-        verseScoreList.innerHTML += `
-            <p>
-                ${score.chapter}:${score.verse}
-                ~
-                ${score.correct}/${score.total}
-                | (${versePercentage}%)
-                | ${formatTime(score.time)}
-            </p>
-        `;
-    });
+
+  const verseScoreList = document.getElementById("verseScoreList");
+  verseScoreList.innerHTML = "";
+
+  verseScores.forEach(score => {
+    const versePercent =
+      score.total === 0
+        ? 0
+        : Math.round((score.correct / score.total) * 100);
+
+    verseScoreList.innerHTML += `
+      <div class="verse-score">
+        <div class="verse-score-top">
+          <span class="verse-score-title">${currentChapter.chapter}:${score.verse}</span>
+          <span class="verse-score-percent">${versePercent}%</span>
+        </div>
+
+        <div class="verse-score-meta">
+          <span>${score.correct} / ${score.total}</span>
+          <span>${formatTime(score.time)}</span>
+        </div>
+
+        <div class="mini-progress">
+          <div class="mini-progress-fill" style="width: ${versePercent}%"></div>
+        </div>
+      </div>
+    `;
+  });
 }
 
 function shuffleArray(array) {
@@ -468,11 +546,18 @@ function formatTime(ms) {
 }
 
 function resetScore() {
-    correctCount = 0;
-    totalHiddenWords = 0;
-    verseScores = [];
-    verseTime = 0;
-    hintCount = 0;
+  document.getElementById("chapterScore").textContent = "";
+  document.getElementById("verseScoreList").innerHTML = "";
+
+  document.getElementById("translation").textContent = "";
+  document.getElementById("difficulty").textContent = "";
+  document.getElementById("hints").textContent = "";
+
+     correctCount = 0;
+     totalHiddenWords = 0;
+     verseScores = [];
+     verseTime = 0;
+     hintCount = 0;
 }
 
 function clearInputs() {
@@ -583,56 +668,56 @@ document
         }
     });
 
-document
-    .getElementById("hintBtn")
-    .addEventListener("click", () => {
+// document
+//     .getElementById("hintBtn")
+//     .addEventListener("click", () => {
 
-        if (tapTimer) {
-            clearTimeout(tapTimer);
-            tapTimer = null;
+//         if (tapTimer) {
+//             clearTimeout(tapTimer);
+//             tapTimer = null;
 
-            displayCurrentVerse();
+//             displayCurrentVerse();
 
-        } else {
-            tapTimer = setTimeout(() => {
-                hintCount++;
+//         } else {
+//             tapTimer = setTimeout(() => {
+//                 hintCount++;
 
-                if (!selectedInput) {
-                    return;
-                }
+//                 if (!selectedInput) {
+//                     return;
+//                 }
 
-                const answer =
-                    selectedInput.dataset.answer
-                        .toLowerCase()
-                        .replace(/[^a-z]/g, "");
+//                 const answer =
+//                     selectedInput.dataset.answer
+//                         .toLowerCase()
+//                         .replace(/[^a-z]/g, "");
 
-                const current =
-                    selectedInput.value
-                        .toLowerCase()
-                        .replace(/[^a-z]/g, "");
+//                 const current =
+//                     selectedInput.value
+//                         .toLowerCase()
+//                         .replace(/[^a-z]/g, "");
 
-                if (current.length < answer.length) {
-                    const newText =
-                        answer.slice(0, current.length + 1);
+//                 if (current.length < answer.length) {
+//                     const newText =
+//                         answer.slice(0, current.length + 1);
 
-                    selectedInput.value = newText;
+//                     selectedInput.value = newText;
 
-                    selectedInput.focus();
+//                     selectedInput.focus();
 
-                    selectedInput.setSelectionRange(
-                        newText.length,
-                        newText.length
-                    );
+//                     selectedInput.setSelectionRange(
+//                         newText.length,
+//                         newText.length
+//                     );
 
-                    selectedInput.dispatchEvent(
-                        new Event("input")
-                    );
-                }
+//                     selectedInput.dispatchEvent(
+//                         new Event("input")
+//                     );
+//                 }
 
-                tapTimer = null;
-            }, 250);
-        }
-    });
+//                 tapTimer = null;
+//             }, 250);
+//         }
+//     });
 
 
 
@@ -660,6 +745,23 @@ document
         setupVerseOrder();
         displayCurrentVerse();
     });
+
+const breakdownToggle =
+  document.getElementById("breakdownToggle");
+
+const verseScoreList =
+  document.getElementById("verseScoreList");
+
+const breakdownArrow =
+  document.getElementById("breakdownArrow");
+
+breakdownToggle.addEventListener("click", () => {
+
+  verseScoreList.classList.toggle("show-dropdown");
+
+  breakdownArrow.classList.toggle("rotate-arrow");
+
+});
 
 async function initializeApp() {
     fillDifficultyDropdown();

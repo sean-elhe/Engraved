@@ -57,53 +57,73 @@
             <i class="fa-solid fa-user-lock"></i>
         </button>
 
+      
     </div> 
         <div class="progress-row">
         <span id="progressCurrent"></span>
-        <progress id="progressBar" value="0" max="100"></progress>
         <span id="progressTotal"></span>
     </div>
+    <div class="progress">
+          <div id="progressFill" class="progress-fill"></div>
+    </div>
+
     </div>
 
     <div class="center">
+      <div class="verse-wrapper">
+    <button id="clearBtn" class="edge-btn left">
+            <i class="fa-solid fa-long-arrow-left"></i>
+    </button>
     <div class="verse-card">
       <p id="verseText"></p>
     </div>
+    <button id="nextBtn" class="edge-btn right">
+            <i class="fa-solid fa-long-arrow-right"></i>
+    </button>  
     </div>  
-
-    <div class="top">
-    <div class="controls">
-        <button id="clearBtn" class="control-btn">
-            <i class="fa-solid fa-arrow-left"></i>
-        </button>
-
-        <button id="hintBtn" class="control-btn hint-btn">
-            <i class="fa-solid fa-lightbulb"></i>
-        </button>
-
-        <button id="nextBtn" class="control-btn">
-            <i class="fa-solid fa-arrow-right"></i>
-        </button>
-    </div>
-
+    </div>  
 
     </div>
 
   </main>
 
-  <main id="scoreScreen" class="card hidden">
-    <h1 id="scoreHeader"></h1>
+  <main id="scoreScreen" class="score-screen hidden">
 
-    <p id="scoreText"></p>
-    <p id="translation">Translation: </p>
-    <p id="difficulty">Difficulty: </p>
-    <p id="hints">Hints used: </p>
-    
+  <h2 class="chapter-title">Chapter Score</h2>
 
+<div class="score-main">
+    <div id="chapterScore"></div>
 
-    <div id="verseScoreList"></div>
+    <section class="info-card">
 
-    <button id="restartBtn"><</button>
+    <div>
+      <span>Translation</span>
+      <strong id="translation">ESV</strong>
+    </div>
+
+    <div>
+      <span>Difficulty</span>
+      <strong id="difficulty">Easy</strong>
+    </div>
+
+    <div>
+      <span>Hints Used</span>
+      <strong id="hints">0</strong>
+    </div>
+    </section>
+</div>
+
+  <div class="breakdown-section">
+
+  <button id="breakdownToggle" class="breakdown-toggle">
+    <span>Chapter Breakdown</span>
+    <span id="breakdownArrow">▾</span>
+  </button>
+
+  <div id="verseScoreList" class="verse-score-list hidden-dropdown"></div>
+
+</div>
+  <button id="restartBtn" class="practice-btn">↻ Practice Again</button>
   </main>
 
   <script src="js/script.js"></script>
