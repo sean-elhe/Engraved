@@ -291,6 +291,7 @@ function setupInputLogic() {
     const hintBtn =
         document.getElementById("hintBtn")
 
+
     inputs.forEach((input, index) => {
         input.setAttribute("enterkethint", "next");
 
@@ -305,20 +306,17 @@ function setupInputLogic() {
             }, 6000);
         });
 
+
+
         input.addEventListener("blur", () => {
+            clearTimeout(hintTimer);
+            hintTimer = null;  
+
 
             setTimeout(() => {
-
-                const active =
-                    document.activeElement;
-
-                const clickedHint =
-                    active === hintBtn;
-
-                if (!clickedHint) {
-                    hintBtn.classList.add("hidden");
+                if (document.activeElement !== hintBtn) {
+                hintBtn.classList.add("hidden");
                 }
-
             }, 0);
         });
 
