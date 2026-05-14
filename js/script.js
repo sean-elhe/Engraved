@@ -16,6 +16,7 @@ let verseScores = [];
 let verseTime = 0;
 
 let selectedInput = null;
+let hintTimer = null;
 let hintCount = 0;
 
 let selectedTranslation = "ESV";
@@ -287,11 +288,37 @@ function closeAnswer(userAnswer, correctAnswer) {
 function setupInputLogic() {
     const inputs =
         document.querySelectorAll(".verseInput");
+    const hintBtn =
+        document.getElementById("hintBtn")
 
     inputs.forEach((input, index) => {
 
         input.addEventListener("focus", () => {
             selectedInput = input;
+            hintBtn.classList.add("hidden");
+            clearTimeout(hintTimer);
+            hintTimer = setTimeout(() => {
+                if (selectedInput === input) {
+                    hintBtn.classList.remove("hidden")
+                }
+            }, 6000);
+        });
+
+        input.addEventListener("blur", () => {
+
+            setTimeout(() => {
+
+                const active =
+                    document.activeElement;
+
+                const clickedHint =
+                    active === hintBtn;
+
+                if (!clickedHint) {
+                    hintBtn.classList.add("hidden");
+                }
+
+            }, 0);
         });
 
         input.addEventListener("input", event => {
@@ -303,7 +330,7 @@ function setupInputLogic() {
                 event.target.dataset.answer.toLowerCase();
 
             event.target.style.width =
-                `${Math.max(event.target.value.length + 1, 1)}ch`;
+                `${Math.max(event.target.value.length + 2, 1)}ch`;
 
             if (
                 event.target.value.length >= answer.length &&
@@ -673,56 +700,57 @@ document
         }
     });
 
-// document
-//     .getElementById("hintBtn")
-//     .addEventListener("click", () => {
+document
+    .getElementById("hintBtn")
+    .addEventListener("click", () => {
 
-//         if (tapTimer) {
-//             clearTimeout(tapTimer);
-//             tapTimer = null;
 
-//             displayCurrentVerse();
+        if (tapTimer) {
+            clearTimeout(tapTimer);
+            tapTimer = null;
 
-//         } else {
-//             tapTimer = setTimeout(() => {
-//                 hintCount++;
+            displayCurrentVerse();
 
-//                 if (!selectedInput) {
-//                     return;
-//                 }
+        } else {
+            tapTimer = setTimeout(() => {
+                hintCount++;
 
-//                 const answer =
-//                     selectedInput.dataset.answer
-//                         .toLowerCase()
-//                         .replace(/[^a-z]/g, "");
+                if (!selectedInput) {
+                    return;
+                }
 
-//                 const current =
-//                     selectedInput.value
-//                         .toLowerCase()
-//                         .replace(/[^a-z]/g, "");
+                const answer =
+                    selectedInput.dataset.answer
+                        .toLowerCase()
+                        .replace(/[^a-z]/g, "");
 
-//                 if (current.length < answer.length) {
-//                     const newText =
-//                         answer.slice(0, current.length + 1);
+                const current =
+                    selectedInput.value
+                        .toLowerCase()
+                        .replace(/[^a-z]/g, "");
 
-//                     selectedInput.value = newText;
+                if (current.length < answer.length) {
+                    const newText =
+                        answer.slice(0, current.length + 1);
 
-//                     selectedInput.focus();
+                    selectedInput.value = newText;
 
-//                     selectedInput.setSelectionRange(
-//                         newText.length,
-//                         newText.length
-//                     );
+                    selectedInput.focus();
 
-//                     selectedInput.dispatchEvent(
-//                         new Event("input")
-//                     );
-//                 }
+                    selectedInput.setSelectionRange(
+                        newText.length,
+                        newText.length
+                    );
 
-//                 tapTimer = null;
-//             }, 250);
-//         }
-//     });
+                    selectedInput.dispatchEvent(
+                        new Event("input")
+                    );
+                }
+
+                tapTimer = null;
+            }, 250);
+        }
+    });
 
 
 
