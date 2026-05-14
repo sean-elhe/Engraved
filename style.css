@@ -85,8 +85,8 @@ button {
   top: 60%;
   transform: translateY(-50%);
 
-  width: 58px;
-  height: 58px;
+  width: 48px;
+  height: 48px;
 
   border-radius: 999px;
   border: 1px solid #eadfcf;
@@ -100,11 +100,11 @@ button {
 }
 
 .edge-btn.left {
-  left: -26px;
+  left: -22px;
 }
 
 .edge-btn.right {
-  right: -26px;
+  right: -22px;
 }
 
 .progress-row {
@@ -147,7 +147,9 @@ select {
 }
 
 .verseInput {
-    width: 150px;
+    width: 1ch;
+    transition: width 0.1s ease;
+
     height: 42px;
     border: 2px solid #ead7b8;
         border-radius: 14px;
@@ -166,20 +168,13 @@ select {
     box-shadow: 0 0 0 4px rgba(212, 161, 95, 0.18);
 }
 
-.verseInput.correct {
-    border-bottom: 3px solid #5D8FE7;
-}
 
 .correctWord {
-    color: #7298C7;
-    font-weight: bold;
-    text-decoration: underline;
+    color: #50C878;
 }
 
 .wrongWord {
     color: #80011F;
-    font-weight: bold;
-    text-decoration: underline;
 }
 
 .hidden {
@@ -613,7 +608,7 @@ select {
     }
 
     .verseInput {
-        width: 72px;
+        min-width: 5ch;
         font-size: 28px;
         line-height: 1.85;
     }

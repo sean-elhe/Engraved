@@ -302,17 +302,14 @@ function setupInputLogic() {
             const answer =
                 event.target.dataset.answer.toLowerCase();
 
+            event.target.style.width =
+                `${Math.max(event.target.value.length + 1, 1)}ch`;
+
             if (
                 event.target.value.length >= answer.length &&
                 index < inputs.length - 1
             ) {
                 inputs[index + 1].focus();
-            }
-
-            if (event.target.value === answer) {
-                event.target.classList.add("correct");
-            } else {
-                event.target.classList.remove("correct");
             }
         });
     });
@@ -326,14 +323,22 @@ function calculateScore() {
         if (item.isHidden) {
             verseTotal++;
 
-            const userInput =
-                document.querySelector(
-                    `input[data-index="${item.index}"]`
-                )?.value || "";
+            const input = document.querySelector(
+                `input[data-index="${item.index}"]`
+            );
+
+            const userInput = input?.value || "";
 
             if (closeAnswer(userInput, item.word)) {
                 verseCorrect++;
+                input.classList.add("correct");
+                input.classList.remove("incorrect");
+            } else {
+                input.classList.add("incorrect");
+                input.classList.remove("correct");
             }
+
+            input.disabled = true;
         }
     });
 
@@ -428,7 +433,7 @@ function showScoreScreen() {
         </div>
         
         <div class="big-progress">
-            <div class="big-progress-fill" style="width: "></div>
+            <div class="big-progress-fill" style="width: ${percent}%"></div>
         </div>
     </div>
     `;
