@@ -292,6 +292,7 @@ function setupInputLogic() {
         document.getElementById("hintBtn")
 
     inputs.forEach((input, index) => {
+        input.setAttribute("enterkethint", "next");
 
         input.addEventListener("focus", () => {
             selectedInput = input;
@@ -321,6 +322,14 @@ function setupInputLogic() {
             }, 0);
         });
 
+        input.addEventListener("keydown", (event) => {
+            if (event.key !== "Enter") return;
+
+            event.preventDefault();
+
+            handleNextInput(index, inputs);
+        });
+
         input.addEventListener("input", event => {
             event.target.value = event.target.value
                 .toLowerCase()
@@ -332,12 +341,6 @@ function setupInputLogic() {
             event.target.style.width =
                 `${Math.max(event.target.value.length + 2, 1)}ch`;
 
-            if (
-                event.target.value.length >= answer.length &&
-                index < inputs.length - 1
-            ) {
-                inputs[index + 1].focus();
-            }
         });
     });
 }
@@ -597,6 +600,39 @@ function clearInputs() {
         .forEach(input => {
             input.value = "";
         });
+}
+
+function handleNextInput(currentIndex, inputs) {
+  const nextIndex =
+    currentIndex < inputs.length - 1
+      ? currentIndex + 1
+      : null;
+
+  if (nextIndex !== null) {
+    inputs[nextIndex].focus();
+    return;
+  }
+
+  handleNext();
+}
+
+function handleNext() {
+    if (stage === 1) {
+        calculateScore();
+        stage = 2;
+        displayVerseWords();
+        return;
+    }
+
+    if (stage === 2) {
+        if (verseOrderIndex < verseOrder.length - 1) {
+        verseOrderIndex++;
+        stage = 1;
+        displayCurrentVerse();
+        } else {
+        showScoreScreen();
+        }
+    }
 }
 
 document
