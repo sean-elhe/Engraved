@@ -21,7 +21,9 @@
   "homepage": "https://github.com/sean-elhe/Web-apps#readme",
   "dependencies": {
     "3": "^2.1.0",
+    "bcrpyt": "^2.0.0",
     "express": "^5.2.1",
+    "express-session": "^1.19.0",
     "sqlite": "^5.1.1",
     "sqlite3": "^6.0.1"
   }

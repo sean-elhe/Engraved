@@ -674,8 +674,6 @@ document
         displayCurrentVerse();
     });
 
-
-
 document
     .getElementById("nextBtn")
     .addEventListener("click", () => {
