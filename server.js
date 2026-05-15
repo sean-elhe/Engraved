@@ -1,11 +1,14 @@
 const express = require("express");
+const session = require("express-session");
 const sqlite3 = require("sqlite3").verbose();
 const path = require("path");
+const bcrypt = require("bcrypt");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
-
 const dbPath = path.join(__dirname, "data", "bibles.db");
+
+app.use(express.json());
 
 console.log("Using database:", dbPath);
 
@@ -19,6 +22,26 @@ const db = new sqlite3.Database(dbPath, (err) => {
 });
 app.use(express.static(__dirname));
 
+app.use(session({
+    secret: "replace-this-with-a-random-secret",
+    resave: false,
+    saveUninitalized: false,
+    cookie: {
+        secure: false
+    }
+}));
+
+db.all(
+    "SELECT name FROM sqlite_master WHERE type='table'",
+    [],
+    (err, rows) => {
+        console.log(rows);
+    }
+);
+
+
+
+// Bible routes
 app.get("/api/verse", (req, res) => {
     const translation = req.query.translation || "KJV";
     const book = req.query.book || "Genesis";
@@ -47,35 +70,6 @@ app.get("/api/verse", (req, res) => {
         res.json(row);
     });
 });
-
-app.get("/api/tables", (req, res) => {
-    db.all(
-        "SELECT name FROM sqlite_master WHERE type='table'",
-        [],
-        (err, rows) => {
-            if (err) {
-                return res.status(500).json({ error: err.message });
-            }
-
-            res.json(rows);
-        }
-    );
-});
-
-app.get("/api/translations", (req, res) => {
-    db.all(
-        "SELECT DISTINCT translation FROM verses",
-        [],
-        (err, rows) => {
-            if (err) {
-                return res.status(500).json({ error: err.message });
-            }
-
-            res.json(rows);
-        }
-    );
-});
-
 app.get("/api/translations", (req, res) => {
     db.all(
         "SELECT DISTINCT translation FROM verses ORDER BY translation",
@@ -87,7 +81,6 @@ app.get("/api/translations", (req, res) => {
         }
     );
 });
-
 app.get("/api/books", (req, res) => {
     const translation = req.query.translation || "NIV";
 
@@ -106,7 +99,6 @@ app.get("/api/books", (req, res) => {
         }
     );
 });
-
 app.get("/api/chapters", (req, res) => {
     const translation = req.query.translation || "NIV";
     const book = req.query.book || "Genesis";
@@ -127,7 +119,6 @@ app.get("/api/chapters", (req, res) => {
         }
     );
 });
-
 app.get("/api/chapter", (req, res) => {
     const translation = req.query.translation || "NIV";
     const book = req.query.book || "Genesis";
@@ -151,29 +142,133 @@ app.get("/api/chapter", (req, res) => {
     );
 });
 
-app.get("/api/random", (req, res) => {
+// User routes
 
-    const translation =
-        req.query.translation || "NIV";
+app.post("/api/signup", async (req, res) => {
 
-    const sql = `
-        SELECT *
-        FROM verses
-        WHERE translation = ?
-        ORDER BY RANDOM()
-        LIMIT 1
-    `;
+    const { email, password } = req.body;
 
-    db.get(sql, [translation], (err, row) => {
+    try {
+
+        const passwordHash =
+            await bcrypt.hash(password, 10);
+
+        db.run(`
+            INSERT INTO users (email, password_hash)
+            VALUES (?, ?)
+        `,
+        [email, passwordHash],
+        function(err) {
+
+            if (err) {
+
+                if (err.message.includes("UNIQUE")) {
+                    return res.status(400).json({
+                        error: "Email already exists"
+                    });
+                }
+
+                return res.status(500).json({
+                    error: err.message
+                });
+            }
+
+            res.json({
+                success: true,
+                userId: this.lastID
+            });
+
+        });
+
+    } catch (err) {
+
+        res.status(500).json({
+            error: err.message
+        });
+
+    }
+
+});
+
+app.post("/api/login", async (req, res) => {
+
+    const { email, password } = req.body;
+
+    db.get(`
+        SELECT * FROM users
+        WHERE email = ?
+    `,
+    [email],
+    async (err, user) => {
 
         if (err) {
-            return res.status(500).json({
-                error: err.message
+            return res.status(500).json(err);
+        }
+
+        if (!user) {
+            return res.status(401).json({
+                error: "Invalid credentials"
             });
         }
 
-        res.json(row);
+        const valid =
+            await bcrypt.compare(
+                password,
+                user.password_hash
+            );
+
+        if (!valid) {
+            return res.status(401).json({
+                error: "Invalid credentials"
+            });
+        }
+
+        req.session.userId = user.id;
+
+        res.json({
+            success: true
+        });
+
     });
+
+});
+
+app.get("/api/me", (req, res) => {
+    if (!req.session.userId) {
+        return res.json({
+            loggedIn: false
+        });
+    }
+    res.json({
+        loggedIn: true,
+        userId: req.session.userId
+    })
+})
+
+// Score routes
+
+app.post("/api/scores", (req, res) => {
+
+    if (!req.session.userId) {
+        return res.status(401).json({ error: "Not logged in" });
+    }
+
+    const userId = req.session.userId;
+    const { score, totalQuestions } = req.body;
+
+    db.run(`
+        INSERT INTO user_scores (user_id, score, total_questions)
+        VALUES (?, ?, ?)
+    `, [userId, score, totalQuestions], (err) => {
+
+        if (err) {
+            return res.status(500).json({ error: err.message });
+        }
+
+        res.json({ success: true });
+
+    });
+
 });
 
 app.listen(PORT, "0.0.0.0", () => {
