@@ -44,9 +44,9 @@ button {
 
 
 .top-row h3 {
-  font-weight: 700;
-  font-size: 18px;
-  color: #1f2933;
+  font-weight: bold;
+  font-size: 21px;
+  color: #c8924e;
 }
 
 .verseText {
@@ -209,11 +209,13 @@ select {
 }
 
 .correctWord {
-    color: #50C878;
+    color: #c8924e;
+    text-decoration: underline;
 }
 
 .wrongWord {
     color: #80011F;
+    text-decoration: underline;
 }
 
 .hidden {
