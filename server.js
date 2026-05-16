@@ -245,6 +245,14 @@ app.get("/api/me", (req, res) => {
     })
 })
 
+app.post("/api/logout", (req, res) => {
+    req.session.destroy(() => {
+        res.json({
+            success:true
+        });
+    });
+});
+
 // Score routes
 
 app.post("/api/scores", (req, res) => {

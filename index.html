@@ -53,11 +53,71 @@
 
         <h3 id="reference"></h3>
 
-        <button id="logIn" class="icon-btn logIn">
-            <i class="fa-solid fa-user-lock"></i>
+        <button id="openAuth" class="icon-btn logIn">
+            <i class="fa-solid fa-heart"></i>
         </button>
 
-      
+            <div id="authOverlay" class="overlay2 hidden">
+              <div class="settings-popup2">
+
+              <div class="menu-header">
+                <h2 id="authTitle"></h2>
+                <button id="closeAuth" class="icon-btn close-btn">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+              </div>
+
+        <!-- LOGGED OUT VIEW -->
+        <div id="authSection">
+
+            <input
+                id="emailInput"
+                placeholder="Email"
+            >
+
+            <input
+                id="passwordInput"
+                type="password"
+                placeholder="Password"
+            >
+
+            <button
+                id="loginBtn"
+                class="authBtn"
+            >
+                Login
+            </button>
+
+            <button
+                id="signupBtn"
+                class="authBtn"
+            >
+                Signup
+            </button>
+
+        </div>
+
+        <!-- LOGGED IN VIEW -->
+        <div
+            id="appSection"
+            class="hidden"
+        >
+
+            <h3>Your Chapters</h3>
+            <h3>Your Scores</h3>
+
+            <button
+                id="logoutBtn"
+                class="authBtn"
+            >
+                Logout
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
     </div> 
         <div class="progress-row">
         <span id="progressCurrent"></span>

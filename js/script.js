@@ -117,6 +117,22 @@ async function loadChapter() {
     displayCurrentVerse();
 }
 
+async function checkLogIn() {
+    const response = await fetch("/api/me", {
+        credentials: "include"
+    });
+
+    const data = await response.json();
+
+    console.log(data)
+
+    if (data.loggedIn) {
+        showLoggedInUI();
+    } else {
+        showLoggedOutUI();
+    }
+}
+
 function fillDifficultyDropdown() {
     const difficultySelect =
         document.getElementById("difficultySelect");
@@ -384,55 +400,6 @@ function calculateScore() {
     });
 }
 
-// function showScoreScreen() {
-//     document.getElementById("practiceScreen")
-//         .classList.add("hidden");
-
-//     document.getElementById("scoreScreen")
-//         .classList.remove("hidden");
-
-//     const overallPercentage = 
-//         ((correctCount / totalHiddenWords) * 100).toFixed(1);
-
-//     const chapterTotalTime =
-//         verseScores.reduce((sum, score) => sum + score.time, 0);
-
-//     document.getElementById("scoreHeader").textContent =
-//         `${book.book} ${currentChapter.chapter}`;
-//     document.getElementById("scoreText").textContent =
-//         `${correctCount}/${totalHiddenWords}
-//         | (${overallPercentage}%)
-//         | ${formatTime(chapterTotalTime)}`;
-
-//     document.getElementById("translation").textContent =
-//         `Translation: ${selectedTranslation}`;
-//     document.getElementById("difficulty").textContent =
-//         `Difficulty: ${document.getElementById("difficultySelect").value}`;
-//     document.getElementById("hints").textContent =
-//         `Hints used: ${hintCount}`;
-
-//     const verseScoreList =
-//         document.getElementById("verseScoreList");
-
-//     verseScoreList.innerHTML = "";
-
-//     verseScores.forEach(score => {
-
-//         const versePercentage =
-//             ((score.correct / score.total) * 100).toFixed(1);
-
-//         verseScoreList.innerHTML += `
-//             <p>
-//                 ${score.chapter}:${score.verse}
-//                 ~
-//                 ${score.correct}/${score.total}
-//                 | (${versePercentage}%)
-//                 | ${formatTime(score.time)}
-//             </p>
-//         `;
-//     });
-// }
-
 function showScoreScreen() {
   document.getElementById("practiceScreen").classList.add("hidden");
   document.getElementById("scoreScreen").classList.remove("hidden");
@@ -633,6 +600,19 @@ function handleNext() {
     }
 }
 
+function showLoggedOutUI() {
+    authSection.classList.remove("hidden");
+    appSection.classList.add("hidden");
+    authTitle.textContent = "Log In";
+}
+
+function showLoggedInUI() {
+    authSection.classList.add("hidden");
+    appSection.classList.remove("hidden");
+    authTitle.textContent = "Welcome back!";
+    passwordInput.value = "";
+}
+
 document
     .getElementById("translationSelect")
     .addEventListener("change", async event => {
@@ -784,10 +764,6 @@ document
         }
     });
 
-
-
-
-
 document
     .getElementById("restartBtn")
     .addEventListener("click", () => {
@@ -828,6 +804,62 @@ breakdownToggle.addEventListener("click", () => {
 
 });
 
+loginBtn.addEventListener("click", async () => {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    const response = await fetch("/api/login", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email,
+            password
+        })
+    });
+    const data = await response.json();
+    console.log(data);
+
+    if (data.success) {
+        showLoggedInUI();
+    } else {
+        alert(data.error);
+    }
+});
+
+signupBtn.addEventListener("click", async () => {
+    const email = emailInput.value;
+    const password = passwordInput.value;
+    const response = await fetch("/api/signup", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            email,
+            password
+        })
+    });
+    const data = await response.json();
+    console.log(data);
+    if (data.success) {
+        alert("Account created!")
+    } else {
+        alert(data.error);
+    }
+});
+
+logoutBtn.addEventListener("click", async () => {
+    await fetch("/api/logout", {
+        method: "POST",
+        credentials: "include"
+    });
+
+    showLoggedOutUI();
+})
+
 async function initializeApp() {
     fillDifficultyDropdown();
     await loadTranslations();
@@ -846,18 +878,55 @@ async function initializeApp() {
     const openBtn = document.getElementById("openSettings");
     const closeBtn = document.getElementById("closeSettings");
     const overlay = document.getElementById("settingsOverlay");
+    const openBtn2 = document.getElementById("openAuth")
+    const closeBtn2 = document.getElementById("closeAuth")
+    const overlay2 = document.getElementById("authOverlay")
 
     openBtn.addEventListener("click", () => {
         overlay.classList.remove("hidden");
     });
+    openBtn2.addEventListener("click", () => {
+        overlay2.classList.remove("hidden")
+    });
     closeBtn.addEventListener("click", () => {
         overlay.classList.add("hidden")
+    });
+    closeBtn2.addEventListener("click", () => {
+        overlay2.classList.add("hidden")
     });
     overlay.addEventListener("click", (event) => {
         if (event.target === overlay) {
             overlay.classList.add("hidden")
         }
     });
+    overlay2.addEventListener("click", (event) => {
+        if (event.target === overlay2) {
+            overlay2.classList.add("hidden")
+        }
+    });
+
+    const authSection =
+    document.getElementById("authSection");
+
+    const appSection =
+        document.getElementById("appSection");
+
+    const emailInput =
+        document.getElementById("emailInput");
+
+    const passwordInput =
+        document.getElementById("passwordInput");
+
+    const loginBtn =
+        document.getElementById("loginBtn");
+
+    const signupBtn =
+        document.getElementById("signupBtn");
+
+    const logoutBtn =
+        document.getElementById("logoutBtn");
+
+    checkLogIn();
 
 }
 
