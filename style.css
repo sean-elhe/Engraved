@@ -198,9 +198,6 @@ select {
         background 0.2s ease;
 }
 
-
-
-
 .verseInput:focus {
     border-color: #7f875a;
     background: #fffdf8;
@@ -230,6 +227,28 @@ select {
     border-radius: 22px;
 }
 
+.overlay .menu-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.overlay .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
+.overlay2 .menu-header {
+  display: flex;
+  flex-direction: row;
+}
+
+.overlay2 .close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+}
+
 .overlay {
     position: fixed;
     inset: 0;
@@ -243,11 +262,32 @@ select {
     z-index: 1000;
 }
 
+.overlay h2 {
+  padding-left: 50px;
+  text-align: center;
+  width: 1;
+}
+
+.overlay2 h2 {
+  padding-left: 50px;
+  text-align: center;
+}
+
 .settings-popup {
     position: relative;
     background: #f5f1eb;
-    padding: 24.px;
+    padding: 12px;
     border-radius: 24px;
+    border-radius: 24px;
+    border: 4px solid black;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
+    min-width: 320px;
+}
+
+.settings-popup2 {
+    position: relative;
+    background: #f5f1eb;
+    padding: 12px;
     border-radius: 24px;
     border: 4px solid black;
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.35);
@@ -307,49 +347,12 @@ select {
 
 }
 
-.menu-header {
-
-    display: flex;
-
-    align-items: center;
-
-    justify-content: space-between;
-
-    margin-bottom: 10px;
-}
-
-.menu-header h2 {
-
-    font-size: 42px;
-
-    font-weight: 700;
-
-    margin: 0;
-}
-
 .authBtn:hover {
 
     background: #e3ddd1;
 
     transform: translateY(-1px);
 
-}
-
-.settings-popup2 {
-    width: 320px;
-
-    padding: 28px 24px;
-
-    border-radius: 28px;
-
-    background: #f5f1ea;
-
-    box-shadow:
-        0 10px 30px rgba(0,0,0,0.12);
-
-    display: flex;
-    flex-direction: column;
-    gap: 18px;
 }
 
 #authSection {
@@ -430,10 +433,10 @@ select {
     margin-right: 4px;
 }
 
-.close-btn {
+.overlay2 .close-btn {
     position: absolute;
     top: 20px;
-    right: 12px;
+    right: 20px;
 }
 
 .control-btn {

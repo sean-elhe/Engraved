@@ -609,7 +609,7 @@ function showLoggedOutUI() {
 function showLoggedInUI() {
     authSection.classList.add("hidden");
     appSection.classList.remove("hidden");
-    authTitle.textContent = "Welcome back!";
+    authTitle.textContent = "Account!";
     passwordInput.value = "";
 }
 
