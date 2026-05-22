@@ -11,6 +11,9 @@ const logoutBtn = document.getElementById("logoutBtn");
 const saveBtn = document.getElementById("saveBtn");
 const savedUI = document.getElementById("savedUI");
 
+const closeSaved = document.getElementById("closeSaved");
+const savedScreen = document.getElementById("savedScreen");
+const practiceScreen = document.getElementById("practiceScreen"); // Grab your core practice interface wrapper
 const clearBtn = document.getElementById("clearBtn");
 const emailInput = document.getElementById("emailInput");
 const passwordInput = document.getElementById("passwordInput");
@@ -260,8 +263,39 @@ export function initEventListeners() {
         showLoggedOutUI();
     });
 
+// Inside your initEventListeners() function in events.js
+    const savedUI = document.getElementById("savedUI");
+    const closeSaved = document.getElementById("closeSaved");
+    const closeAuth = document.getElementById("closeAuth"); // Make sure this is grabbed at the top
+    const appSection = document.getElementById("appSection");
+    const savedScreen = document.getElementById("savedScreen");
+    const authTitle = document.getElementById("authTitle");
+
+// Clicking Bookmarks updates title, reveals the back arrow, and transitions sub-views
     savedUI.addEventListener("click", () => {
+        appSection.classList.add("hidden");
+        savedScreen.classList.remove("hidden");
+        
+        authTitle.textContent = "Bookmarks";
+        
+        // --- THE FIX ---
+        closeSaved.classList.remove("hidden"); // Show the Back Arrow
+        closeAuth.classList.add("hidden");    // Hide the Close "X" button!
+        
         loadSavedChaptersUI();
+    });
+
+// Clicking the Back arrow restores the root panel states seamlessly
+// Clicking the Back Arrow
+    closeSaved.addEventListener("click", () => {
+        savedScreen.classList.add("hidden");
+        appSection.classList.remove("hidden");
+        
+        authTitle.textContent = "Account!";
+        
+        // --- THE FIX ---
+        closeSaved.classList.add("hidden");     // Hide the Back Arrow
+        closeAuth.classList.remove("hidden");  // Show the Close "X" button again!
     });
 
     openSettings.addEventListener("click", () => settingsOverlay.classList.remove("hidden"));
@@ -307,7 +341,16 @@ export function initEventListeners() {
 
     
     closeSettings.addEventListener("click", () => settingsOverlay.classList.add("hidden"));
-    closeAuth.addEventListener("click", () => authOverlay.classList.add("hidden"));
+
+    closeAuth.addEventListener("click", () => {
+        authOverlay.classList.add("hidden");
+        savedScreen.classList.add("hidden");
+        appSection.classList.remove("hidden");
+        
+        // Clean string normalization
+        authTitle.textContent = "Account!";
+        closeSaved.classList.add("hidden");
+    });
 
     settingsOverlay.addEventListener("click", e => {
         if (e.target === settingsOverlay) settingsOverlay.classList.add("hidden");

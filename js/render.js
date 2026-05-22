@@ -257,7 +257,7 @@ export function handleNext() {
 
 export async function loadSavedChaptersUI() {
     const chapters = await apiFetchSavedChapters();
-    console.log(chapters);
+    const savedChaptersContainer = document.getElementById("savedChaptersContainer");    console.log(chapters);
 
     savedChaptersContainer.innerHTML = "";
 
@@ -269,15 +269,59 @@ export async function loadSavedChaptersUI() {
     chapters.forEach(chapter => {
         const button = document.createElement("button");
         button.className = "savedChapterBtn";
-        button.textContent = `${chapter.book} ${chapter.chapter}`;
+        button.textContent = `${chapter.book} ${chapter.chapter} (${chapter.translation})`;
 
         button.addEventListener("click", async () => {
-            // Note: Assigning variables to window/globals or state context depending on setup
-            state.selectedTranslation = chapter.translation; 
-            state.currentChapter = chapter.chapter;
-            // Execute view load
-            await loadChapter();
+            try {
+                console.log(`Loading bookmark: ${chapter.book} ${chapter.chapter} [${chapter.translation}]`);
+
+                // 1. Sync values directly to your global application state
+                state.selectedTranslation = chapter.translation;
+                
+                // We fake a transient structure so the app knows what chapter is active before the API resolves
+                state.currentChapter = {
+                    chapter: chapter.chapter,
+                    verses: []
+                };
+
+                // 2. Sync the visual HTML dropdown elements so they don't look wrong
+                const translationSelect = document.getElementById("translationSelect");
+                const bookSelect = document.getElementById("bookSelect");
+                const chapterSelect = document.getElementById("chapterSelect");
+
+                if (translationSelect) translationSelect.value = chapter.translation;
+                
+                // Since the book select options are loaded via API, we force-inject an option 
+                // if it's not present yet, ensuring the select element holds a valid visual state
+                if (bookSelect) {
+                    bookSelect.innerHTML = `<option value="${chapter.book_id}" selected>${chapter.book}</option>`;
+                }
+                if (chapterSelect) {
+                    chapterSelect.innerHTML = `<option value="${chapter.chapter}" selected>${chapter.chapter}</option>`;
+                }
+
+                // Inside the bookmark button click listener loop in render.js:
+                await loadChapter();
+
+                const authOverlay = document.getElementById("authOverlay");
+                if (authOverlay) {
+                    authOverlay.classList.add("hidden");
+                    
+                    document.getElementById("savedScreen").classList.add("hidden");
+                    document.getElementById("appSection").classList.remove("hidden");
+                    document.getElementById("authTitle").textContent = "Account!";
+                    
+                    // Clean state reset for icons
+                    document.getElementById("closeSaved").classList.add("hidden");     // Ensure back arrow is hidden
+                    document.getElementById("closeAuth").classList.remove("hidden");  // Ensure Close "X" is visible for next open!
+                }
+
+            } catch (error) {
+                console.error("Failed to load bookmarked chapter:", error);
+                alert("Could not load this bookmark. Please try again.");
+            }
         });
+        
         savedChaptersContainer.appendChild(button);
     });
 }

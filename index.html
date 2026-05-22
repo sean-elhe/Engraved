@@ -1,18 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Engraved</title>
 
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
 
-
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400..800;1,400..800&display=swap" rel="stylesheet">
-
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap" rel="stylesheet">
 </head>
 
@@ -20,7 +17,7 @@
   <main id="practiceScreen" class="card">
 
     <div class="bottom">
-    <div class="top-row">
+      <div class="top-row">
 
         <button id="openSettings" class="icon-btn settings-open">
             <i class="fa-solid fa-gear"></i>
@@ -28,9 +25,7 @@
 
         <div id="settingsOverlay" class="overlay hidden">
           <div class="settings-popup">
-
               <div class="menu-header">
-              
                 <h2>Settings</h2>
                 <button id="closeSettings" class="icon-btn close-btn">
                   <i class="fa-solid fa-xmark"></i>
@@ -47,173 +42,115 @@
                   <option value="random">Randomized</option>
                 </select>
               </div>
-
           </div>
         </div>
 
         <h3 id="reference"></h3>
 
-        <!-- <button id="saveBtn" class="icon-btn logIn">
-            <i class="fa-solid fa-heart"></i>
-        </button> -->
-
         <button id="openAuth" class="icon-btn logIn">
             <i class="fa-solid fa-heart"></i>
         </button>
 
-            <div id="authOverlay" class="overlay2 hidden">
-              <div class="settings-popup2">
+<div id="authOverlay" class="overlay2 hidden">
+  <div class="settings-popup2">
 
-              <div class="menu-header">
-                <h2 id="authTitle"></h2>
-                <button id="closeAuth" class="icon-btn close-btn">
-                  <i class="fa-solid fa-xmark"></i>
-                </button>
-              </div>
-
-        <!-- LOGGED OUT VIEW -->
-        <div id="authSection">
-
-            <input
-                id="emailInput"
-                placeholder="User"
-            >
-
-            <input
-                id="passwordInput"
-                type="password"
-                placeholder="PIN"
-            >
-
-            <button
-                id="loginBtn"
-                class="authBtn"
-            >
-                Log In
-            </button>
-
-            <button
-                id="signupBtn"
-                class="authBtn"
-            >
-                Sign Up
-            </button>
-
-        </div>
-
-        <!-- LOGGED IN VIEW -->
-        <div
-            id="appSection"
-            class="hidden"
-        >
-            <h3>Settings</h3>
-            <!-- <h3>Bookmarks</h3> -->
-            <button id="savedUI" class="dashboard-tab-btn">Bookmarks</button>
-
-            <div id="savedOverlay" class="overlaySaved hidden">
-              <div class="saved-popup">
-
-              <div class="menu-header">
-                <button id="closeSaved" class="icon-btn close-btn">
-                  <i class="fa-solid fa-xmark"></i>
-                </button>
-
-                <div class="saved-chapters-section">
-                    <div id="savedChaptersContainer" class="saved-chapters-grid">
-                </div>
-              </div>
-              </div>
-              </div>
-
-
-        </div>
-            <h3>Scores</h3>
-
-            <button
-                id="logoutBtn"
-                class="authBtn"
-            >
-                Logout
-            </button>
-
-        </div>
-
+    <div class="menu-header">
+      <h2 id="authTitle">Account</h2>
+      
+      <div class="header-controls">
+        <button id="closeSaved" class="icon-btn hidden">
+            <i class="fa-solid fa-arrow-left"></i>
+        </button>
+        <button id="closeAuth" class="icon-btn close-btn">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
     </div>
 
+    <div id="authSection" class="hidden">
+        <input id="emailInput" placeholder="User">
+        <input id="passwordInput" type="password" placeholder="PIN">
+        <button id="loginBtn" class="authBtn">Log In</button>
+        <button id="signupBtn" class="authBtn">Sign Up</button>
+    </div>
+
+    <div id="appSection" class="hidden">
+        <button id="preferencesUI" class="dashboard-tab-btn">Preferences</button>
+        <button id="savedUI" class="dashboard-tab-btn">Bookmarks</button>
+        <button id="scoresUI" class="dashboard-tab-btn">Scores</button>
+        <button id="logoutBtn" class="authBtn">Logout</button>
+    </div>
+
+    <div id="savedScreen" class="hidden">
+        <div class="saved-chapters-section">
+            <div id="savedChaptersContainer" class="saved-chapters-grid"></div>
+        </div>
+    </div>
+
+  </div>
 </div>
-    </div> 
+         </div> </div> 
+          
+        <div class="progress-container-wrapper">
         <div class="progress-row">
-        <span id="progressCurrent"></span>
-        <span id="progressTotal"></span>
-    </div>
-    <div class="progress">
-          <div id="progressFill" class="progress-fill"></div>
+            <span id="progressCurrent"></span>
+            <span id="progressTotal"></span>
+        </div>
+        <div class="progress">
+            <div id="progressFill" class="progress-fill"></div>
+        </div>
     </div>
 
-    </div>
-
-    <button id="hintBtn" class="hintBtn hidden">
-      HINT
-        <!-- <i class="fa-solid fa-lightbulb"></i> -->
-    </button>
-
+    <button id="hintBtn" class="hintBtn hidden">HINT</button>
 
     <div class="center">
       <div class="verse-wrapper">
-    <button id="clearBtn" class="edge-btn left">
+        <button id="clearBtn" class="edge-btn left">
             <i class="fa-solid fa-chevron-left"></i>
-    </button>
-    <div class="verse-card">
-      <p id="verseText"></p>
-    </div>
-    <button id="nextBtn" class="edge-btn right">
+        </button>
+        <div class="verse-card">
+          <p id="verseText"></p>
+        </div>
+        <button id="nextBtn" class="edge-btn right">
             <i class="fa-solid fa-chevron-right"></i>
-    </button>  
+        </button>  
+      </div>  
     </div>  
-    </div>  
-
-    </div>
 
   </main>
 
   <main id="scoreScreen" class="score-screen hidden">
+    <h2 class="chapter-title">Chapter Score</h2>
 
-  <h2 class="chapter-title">Chapter Score</h2>
-
-<div class="score-main">
-    <div id="chapterScore"></div>
-
-    <section class="info-card">
-
-    <div>
-      <span>Translation</span>
-      <strong id="translation">ESV</strong>
+    <div class="score-main">
+        <div id="chapterScore"></div>
+        <section class="info-card">
+            <div>
+              <span>Translation</span>
+              <strong id="translation">ESV</strong>
+            </div>
+            <div>
+              <span>Difficulty</span>
+              <strong id="difficulty">Easy</strong>
+            </div>
+            <div>
+              <span>Hints Used</span>
+              <strong id="hints">0</strong>
+            </div>
+        </section>
     </div>
 
-    <div>
-      <span>Difficulty</span>
-      <strong id="difficulty">Easy</strong>
+    <div class="breakdown-section">
+      <button id="breakdownToggle" class="breakdown-toggle">
+        <span>Chapter Breakdown</span>
+        <span id="breakdownArrow">▾</span>
+      </button>
+      <div id="verseScoreList" class="verse-score-list hidden-dropdown"></div>
     </div>
 
-    <div>
-      <span>Hints Used</span>
-      <strong id="hints">0</strong>
-    </div>
-    </section>
-</div>
-
-  <div class="breakdown-section">
-
-  <button id="breakdownToggle" class="breakdown-toggle">
-    <span>Chapter Breakdown</span>
-    <span id="breakdownArrow">▾</span>
-  </button>
-
-  <div id="verseScoreList" class="verse-score-list hidden-dropdown"></div>
-
-</div>
-  <button id="restartBtn" class="practice-btn">↻ Practice Again</button>
+    <button id="restartBtn" class="practice-btn">↻ Practice Again</button>
   </main>
 
   <script type="module" src="js/main.js"></script>
 </body>
+</html>

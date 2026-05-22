@@ -15,6 +15,12 @@ body {
     font-size: 30px;
 }
 
+#appSection {
+  display: flex;
+  width: 1;
+  flex-direction: column;
+}
+
 
 button {
     margin-top: 15px;
@@ -294,6 +300,148 @@ select {
     min-width: 320px;
 }
 
+/* Full screen contextual shift panel layout */
+.saved-screen {
+    width: 100%;
+    min-height: 80vh;
+    background-color: #ffffff;
+    animation: slideIn 0.25s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    padding: 16px;
+    box-sizing: border-box;
+}
+
+.menu-header {
+    margin-bottom: 20px;
+}
+
+/* Make the back button look like a native interface link */
+#closeSaved {
+    background: transparent;
+    border: none;
+    color: #4b5563;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+}
+
+#closeSaved:hover {
+    color: #111827;
+}
+
+/* Smooth contextual transition */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(8px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Ensure the modal container handles content shifts smoothly */
+.settings-popup2 {
+    background: #fdfbf7; /* Matching your cream color tint */
+    border: 2px solid #000000;
+    border-radius: 24px;
+    padding: 24px;
+    width: 90%;
+    max-width: 380px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    min-height: 220px;
+    transition: all 0.25s ease;
+}
+
+/* Fix the overlapping icon layout header row */
+.settings-popup2 .menu-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 20px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+    padding-bottom: 12px;
+}
+
+.settings-popup2 .menu-header h2 {
+    margin: 0;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #111827;
+}
+
+/* Header button cluster control alignment */
+.settings-popup2 .header-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Icon action buttons buttons styling */
+.settings-popup2 .icon-btn {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: #4b5563;
+    cursor: pointer;
+    padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
+.settings-popup2 .icon-btn:hover {
+    color: #111827;
+}
+
+/* Clean up your Bookmarks tag layout flow wrapper */
+/* Update this block in your stylesheet */
+.saved-chapters-grid {
+    display: flex;
+    flex-direction: column; /* Force buttons to stack straight down vertically */
+    gap: 10px;              /* Consistent vertical breathing room between buttons */
+    padding: 12px 0;
+    max-height: 240px;      /* Set a fixed height limit before scrolling kick-starts */
+    overflow-y: auto;       /* Add scrollbar if you have a lot of bookmarks */
+    width: 100%;            /* Force container to take up full available modal width */
+    box-sizing: border-box;
+}
+
+/* Update your button style so they stretch nicely as wide rows */
+.savedChapterBtn {
+    background: #ffffff;
+    color: #111827;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    padding: 12px 16px;      /* Slightly increased padding for a better click/tap target */
+    border: 1px solid #111827;
+    border-radius: 12px;     /* Changed from a pill shape to a clean, rounded row card */
+    cursor: pointer;
+    text-align: left;        /* Aligns text beautifully to the left edge like a standard list */
+    width: 100%;             /* Stretches rows cleanly from edge to edge */
+    box-sizing: border-box;
+    transition: all 0.2s ease;
+}
+
+/* Interactive focus and hover feedback */
+.savedChapterBtn:hover {
+    background: #111827;
+    color: #ffffff;
+    transform: translateX(4px); /* Subtle modern slide-right animation on hover */
+}
+
+.savedChapterBtn:active {
+    transform: translateX(0);
+}
 
 .overlay2 {
     position: fixed;
