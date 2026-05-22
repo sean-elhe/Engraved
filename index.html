@@ -53,6 +53,10 @@
 
         <h3 id="reference"></h3>
 
+        <!-- <button id="saveBtn" class="icon-btn logIn">
+            <i class="fa-solid fa-heart"></i>
+        </button> -->
+
         <button id="openAuth" class="icon-btn logIn">
             <i class="fa-solid fa-heart"></i>
         </button>
@@ -72,27 +76,27 @@
 
             <input
                 id="emailInput"
-                placeholder="Email"
+                placeholder="User"
             >
 
             <input
                 id="passwordInput"
                 type="password"
-                placeholder="Password"
+                placeholder="PIN"
             >
 
             <button
                 id="loginBtn"
                 class="authBtn"
             >
-                Login
+                Log In
             </button>
 
             <button
                 id="signupBtn"
                 class="authBtn"
             >
-                Signup
+                Sign Up
             </button>
 
         </div>
@@ -102,9 +106,28 @@
             id="appSection"
             class="hidden"
         >
+            <h3>Settings</h3>
+            <!-- <h3>Bookmarks</h3> -->
+            <button id="savedUI" class="dashboard-tab-btn">Bookmarks</button>
 
-            <h3>Your Chapters</h3>
-            <h3>Your Scores</h3>
+            <div id="savedOverlay" class="overlaySaved hidden">
+              <div class="saved-popup">
+
+              <div class="menu-header">
+                <button id="closeSaved" class="icon-btn close-btn">
+                  <i class="fa-solid fa-xmark"></i>
+                </button>
+
+                <div class="saved-chapters-section">
+                    <div id="savedChaptersContainer" class="saved-chapters-grid">
+                </div>
+              </div>
+              </div>
+              </div>
+
+
+        </div>
+            <h3>Scores</h3>
 
             <button
                 id="logoutBtn"
@@ -192,5 +215,5 @@
   <button id="restartBtn" class="practice-btn">↻ Practice Again</button>
   </main>
 
-  <script src="js/script.js"></script>
+  <script type="module" src="js/main.js"></script>
 </body>

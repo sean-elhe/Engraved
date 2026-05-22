@@ -42,6 +42,33 @@ db.all(
 
 
 // Bible routes
+
+app.get("/api/tables", (req, res) => {
+    db.all(
+        "SELECT name FROM sqlite_master WHERE type='table'",
+        [],
+        (err, rows) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            res.json(rows);
+        }
+    );
+});
+app.get("/api/translations", (req, res) => {
+    db.all(
+        "SELECT DISTINCT translation FROM verses",
+        [],
+        (err, rows) => {
+            if (err) {
+                return res.status(500).json({ error: err.message });
+            }
+
+            res.json(rows);
+        }
+    );
+});
 app.get("/api/verse", (req, res) => {
     const translation = req.query.translation || "KJV";
     const book = req.query.book || "Genesis";
@@ -254,6 +281,107 @@ app.post("/api/logout", (req, res) => {
 });
 
 // Score routes
+
+app.post("/api/save-chapter", (req, res) => {
+
+    // Must be logged in
+    if (!req.session.userId) {
+        return res.status(401).json({
+            error: "Not logged in"
+        });
+    }
+
+    const userId =
+        req.session.userId;
+
+    const {
+        translation,
+        book_id,
+        book,
+        chapter
+    } = req.body;
+
+    db.run(`
+        INSERT INTO saved_chapters (
+            user_id,
+            translation,
+            book_id,
+            book,
+            chapter,
+            verse
+        )
+        VALUES (?, ?, ?, ?, ?, ?)
+    `,
+    [
+        userId,
+        translation,
+        book_id,
+        book,
+        chapter,
+
+        // 0 = saved chapter
+        0
+    ],
+    (err) => {
+
+        if (err) {
+
+            // Already saved
+            if (
+                err.message.includes("UNIQUE")
+            ) {
+                return res.status(400).json({
+                    error: "Already saved"
+                });
+            }
+
+            return res.status(500).json({
+                error: err.message
+            });
+        }
+
+        res.json({
+            success: true
+        });
+
+    });
+
+});
+
+app.get("/api/saved-chapters", (req, res) => {
+
+    if (!req.session.userId) {
+        return res.status(401).json({
+            error: "Not logged in"
+        });
+    }
+
+    db.all(`
+        SELECT
+            translation,
+            book_id,
+            book,
+            chapter,
+            saved_at
+        FROM saved_chapters
+        WHERE user_id = ?
+          AND verse = 0
+        ORDER BY saved_at DESC
+    `,
+    [req.session.userId],
+    (err, rows) => {
+
+        if (err) {
+            return res.status(500).json({
+                error: err.message
+            });
+        }
+
+        res.json(rows);
+
+    });
+
+});
 
 app.post("/api/scores", (req, res) => {
 

@@ -728,6 +728,13 @@ select {
   transform: rotate(180deg);
 }
 
+.dashboard-tab-btn {
+  background: transparent;
+  border: none;
+}
+
+
+
 
 @media (max-width: 600px) {
     body {
