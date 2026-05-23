@@ -1,4 +1,7 @@
 // Isolated API wrappers
+
+// api.js
+
 export async function apiFetchTranslations() {
     const response = await fetch("/api/translations");
     return await response.json();
@@ -60,5 +63,31 @@ export async function apiSaveChapter(payload) {
 
 export async function apiFetchSavedChapters() {
     const response = await fetch("/api/saved-chapters", { credentials: "include" });
+    return await response.json();
+}
+
+/**
+ * Sends a request to the backend to delete a specific saved bookmark.
+ * @param {Object} payload - The chapter details to identify the record.
+ * @param {string} payload.translation - Scripture translation (e.g., 'ESV').
+ * @param {number} payload.book_id - The numeric ID of the book.
+ * @param {number} payload.chapter - The chapter number.
+ * @returns {Promise<Object>} The server's JSON response object.
+ */
+export async function apiDeleteChapter({ translation, book_id, chapter }) {
+    const response = await fetch("/api/delete-chapter", {
+        method: "DELETE", 
+        credentials: "include",
+        headers: { 
+            "Content-Type": "application/json" 
+        },
+        body: JSON.stringify({ translation, book_id, chapter })
+    });
+    
+    if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(`Server returned status ${response.status}: ${errorText.slice(0, 100)}`);
+    }
+
     return await response.json();
 }

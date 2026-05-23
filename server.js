@@ -282,7 +282,58 @@ app.post("/api/logout", (req, res) => {
 
 // Score routes
 
-app.post("/api/save-chapter", (req, res) => {
+app.delete("/api/delete-chapter", async (req, res) => {
+    // 1. Security Check: Ensure the user session is active
+    if (!req.session || !req.session.userId) {
+        return res.status(401).json({ 
+            success: false, 
+            error: "Unauthorized. Please log in first." 
+        });
+    }
+
+    // 2. Destructure the payload sent by your front-end script
+    const { translation, book_id, chapter } = req.body;
+    const userId = req.session.userId;
+
+    // Validation Check: Ensure all identifiers are present
+    if (!translation || !book_id || !chapter) {
+        return res.status(400).json({ 
+            success: false, 
+            error: "Missing required properties (translation, book_id, or chapter)." 
+        });
+    }
+
+    try {
+        // 3. Database Execution Core
+        // Replace this mockup query with your actual database engine tool (SQL, MongoDB, Firebase, etc.)
+        
+        /* --- Example for a SQL Database (SQLite / PostgreSQL) --- */
+        const query = `
+            DELETE FROM saved_chapters 
+            WHERE user_id = ? AND translation = ? AND book_id = ? AND chapter = ?
+        `;
+        await db.run(query, [userId, translation, book_id, chapter]);
+        
+        /* --- Example for a MongoDB / Mongoose setup --- */
+        // await SavedChapter.deleteOne({ userId, translation, book_id, chapter });
+
+
+        // 4. Return a clean JSON confirmation block to the browser frontend
+        return res.json({ 
+            success: true, 
+            message: "Bookmark successfully deleted." 
+        });
+
+    } catch (error) {
+        console.error("Backend deletion database crash error:", error);
+        return res.status(500).json({ 
+            success: false, 
+            error: "Internal server error mapping database deletion paths." 
+        });
+    }
+});
+
+app.post("/api/save-chapter", async (req, res) => {
 
     // Must be logged in
     if (!req.session.userId) {
@@ -382,6 +433,8 @@ app.get("/api/saved-chapters", (req, res) => {
     });
 
 });
+
+
 
 app.post("/api/scores", (req, res) => {
 
