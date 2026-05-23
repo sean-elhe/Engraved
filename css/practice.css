@@ -1,0 +1,237 @@
+
+/* ==========================================================================
+   3. INPUTS, BUTTONS, & CORE CONTROLS
+   ========================================================================== */
+button {
+    margin-top: 15px;
+    padding: 4px 16px;
+    border: 1px solid black;
+    border-radius: 999px;
+    background-color: white;
+    color: black;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.icon-btn {
+    width: 38px;
+    height: 38px;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: none;
+    background: transparent;
+    font-size: 14px;
+    color: #111;
+    transition: all 0.2s ease;
+}
+
+.control-btn {
+    width: 54px;
+    height: 54px;
+    border: none;
+    border-radius: 999px;
+    background: #fffaf1;
+    box-shadow: 0 6px 14px rgba(0,0,0,0.12);
+    font-size: 24px;
+    transition: transform 0.15s ease, scale 0.15s ease;
+}
+
+.control-btn:hover {
+    transform: translateY(-2px);
+}
+
+.control-btn:active {
+    transform: scale(0.96);
+}
+
+.dashboard-tab-btn {
+    background: transparent;
+    border: none;
+}
+
+.settings-open {
+    justify-self: start;
+    margin-left: 4px;
+}
+
+.logIn {
+    justify-self: end;
+    margin-right: 4px;
+}
+
+.select,
+select {
+    padding: 6px 8px;
+    border: 1px solid black;
+    border-radius: 8px;
+    font-size: 16px;
+    max-width: 100%;
+}
+
+.selectors {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 12px;
+}
+
+select {
+    padding: 10px;
+    border-radius: 12px;
+    font-size: 16px;
+}
+
+/* ==========================================================================
+   4. INTERACTIVE VERSE PRACTICING MODULE
+   ========================================================================== */
+.verse-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.verse-card {
+    font-family: "EB Garamond", serif;
+    background: #fffaf1;
+    border: 1px solid #eadbc6;
+    border-radius: 28px;
+    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
+    display: flex;
+    justify-content: center;
+    padding: 52px 30px;
+    width: 100%;
+    min-height: 400px;
+    max-width: 900px;
+}
+
+.verseText {
+    font-family: "EB Garamond", serif;
+    text-align: center;
+    color: #222;
+}
+
+.verseInput {
+    width: 1ch;
+    height: 38px;
+    border: 2px dashed #aaa17f;
+    border-radius: 14px;
+    padding: 2px;
+    background: #fbf8f1;
+    color: #222820;
+    font-family: "EB Garamond", Georgia, serif;
+    font-size: 30px;
+    text-align: center;
+    outline: none;
+    box-shadow: 0 8px 20px rgba(70, 55, 35, 0.08);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.verseInput:focus {
+    border-color: #7f875a;
+    background: #fffdf8;
+    box-shadow: 0 0 0 4px rgba(127, 135, 90, 0.15),
+                0 8px 20px rgba(70, 55, 35, 0.12);
+}
+
+.correctWord {
+    color: #c8924e;
+    text-decoration: underline;
+}
+
+.wrongWord {
+    color: #80011F;
+    text-decoration: underline;
+}
+
+/* Gameplay Buttons */
+.hintBtn, 
+.hint-btn {
+    opacity: 1;
+    transition: opacity 0.2s ease;
+    position: absolute;
+    top: 27.5%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 999px;
+    border: 1px solid #eadfcf;
+    background: #f7f1e8;
+    font-size: 14px;
+    font-weight: bolder;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.hint-btn {
+    background: #d4a15f;
+    color: white;
+    width: 58px;
+    height: 38px;
+}
+
+.hintBtn.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.edge-btn {
+    position: absolute;
+    top: 60%;
+    transform: translateY(-50%);
+    width: 48px;
+    height: 48px;
+    border-radius: 999px;
+    border: none;
+    color: gainsboro;
+    background: transparent;
+    font-size: 36px;
+    font-weight: bolder;
+    cursor: pointer;
+    z-index: 5;
+}
+
+.edge-btn.left { left: -22px; }
+.edge-btn.right { right: -22px; }
+
+.controls {
+    display: flex;
+    justify-content: center;
+    gap: 34px;
+    align-items: center;
+    margin-top: 0;
+}
+
+.progress-row {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #6b7280;
+    margin-bottom: 10px;
+}
+
+.progress {
+    width: 100%;
+    height: 10px;
+    background: #ece4d8;
+    border-radius: 999px;
+    overflow: hidden;
+    margin-top: 8px;
+    margin-bottom: 18px;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: linear-gradient(to right, #c8924e, #ddb170);
+    border-radius: inherit;
+    transition: width 0.35s ease;
+}
+
+.nav-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+    margin-bottom: 15px;
+}
