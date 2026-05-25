@@ -1,0 +1,32 @@
+name: Automated Production Deployment
+
+on:
+  push:
+    branches: [ main ]  # Triggers the deployment every time you push to main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout Code Repository
+      uses: actions/checkout@v4
+
+    - name: Execute Deployment Script via SSH
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.VPS_IP }}
+        username: ${{ secrets.VPS_USER }}
+        key: ${{ secrets.VPS_SSH_KEY }}
+        port: 22
+        script: |
+          cd /var/www/site-one
+          git fetch origin main
+          git reset --hard origin/main
+          npm install --production
+          
+          # If your quiz app needs a build step (e.g. Next.js, React, TypeScript), uncomment the next line:
+          # npm run build
+          
+          # Tell PM2 to smoothly reload the app with zero downtime
+          pm2 reload app-one || pm2 start server.js --name "app-one"
