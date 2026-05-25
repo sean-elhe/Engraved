@@ -69,6 +69,31 @@ select {
     max-width: 100%;
 }
 
+
+    .selector-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .selector-row select,
+    .selector-row .select {
+        width: 100%;
+        min-width: 0;
+        font-size: 16px;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        font-size: 28px;
+        line-height: 1.15;
+        text-align: center;
+        margin: 22px 0 14px;
+    }
+
+
 .selectors {
     display: flex;
     flex-direction: column;
@@ -228,10 +253,39 @@ select {
     transition: width 0.35s ease;
 }
 
+
+.verse-line,
+#verseText {
+        font-size: 28px;
+        line-height: 1.85;
+        text-align: center;
+}
+
+.verseInput {
+        min-width: 6ch;
+        font-size: 28px;
+        line-height: 1.85;
+}
+
+
+
+
 .nav-row {
-    display: flex;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 10px;
+    width: 100%;
+    margin-top: 22px;
     justify-content: center;
     margin-bottom: 15px;
+}
+
+.nav-row button,
+    button {
+        min-height: 44px;
+        margin-top: 0;
+        padding: 8px 12px;
+        font-size: 18px;
+        touch-action: manipulation;
 }

@@ -7,3 +7,91 @@
 @import url('./css/practice.css');
 @import url('./css/modals.css');
 @import url('./css/scores.css');
+
+
+
+/* ==========================================================================
+   8. RESPONSIVE MOBILE MEDIA BREAKPOINTS
+   ========================================================================== */
+@media (max-width: 600px) {
+    body {
+        justify-content: center;
+        align-items: stretch;
+        padding: 0;
+        background: #F9F6EE;
+        font-size: 18px;
+    }
+
+    .app {
+        width: 100%;
+        min-height: 100dvh;
+        padding: 0;
+        border-radius: 0;
+    }
+
+    .card {
+        box-sizing: border-box;
+        width: 100%;
+        border: none;
+        border-radius: 28px 28px 0 0;
+        box-shadow: none;
+        border-width: 4px;
+        padding: 1px 9px;
+        min-height: 85vh;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .selector-row {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .selector-row select,
+    .selector-row .select {
+        width: 100%;
+        min-width: 0;
+        font-size: 16px;
+        padding: 8px;
+        box-sizing: border-box;
+    }
+
+    h1 {
+        font-size: 28px;
+        line-height: 1.15;
+        text-align: center;
+        margin: 22px 0 14px;
+    }
+
+    .verse-line,
+    #verseText {
+        font-size: 28px;
+        line-height: 1.85;
+        text-align: center;
+    }
+
+    .verseInput {
+        min-width: 6ch;
+        font-size: 28px;
+        line-height: 1.85;
+    }
+
+    .nav-row {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        width: 100%;
+        margin-top: 22px;
+    }
+
+    .nav-row button,
+    button {
+        min-height: 44px;
+        margin-top: 0;
+        padding: 8px 12px;
+        font-size: 18px;
+        touch-action: manipulation;
+    }
+}
