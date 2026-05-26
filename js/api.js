@@ -27,28 +27,29 @@ export async function apiCheckLogIn() {
     return await response.json();
 }
 
-export async function apiLogin(email, password) {
+export async function apiLogin(name, pin) {
     const response = await fetch("/api/login", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ name, pin })
     });
     return await response.json();
 }
 
-export async function apiSignup(email, password) {
+export async function apiSignup(name, pin) {
     const response = await fetch("/api/signup", {
         method: "POST",
         credentials: "include",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password })
+        body: JSON.stringify({ name, pin })
     });
     return await response.json();
 }
 
 export async function apiLogout() {
-    await fetch("/api/logout", { method: "POST", credentials: "include" });
+    const response = await fetch("/api/logout", { method: "POST", credentials: "include" });
+    return handleResponse(response);
 }
 
 export async function apiSaveChapter(payload) {

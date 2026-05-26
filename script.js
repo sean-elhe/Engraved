@@ -630,7 +630,7 @@ function showLoggedInUI() {
     authSection.classList.add("hidden");
     appSection.classList.remove("hidden");
     authTitle.textContent = "Account!";
-    passwordInput.value = "";
+    pinInput.value = "";
 }
 
 document
@@ -822,8 +822,8 @@ breakdownToggle.addEventListener("click", () => {
 });
 
 loginBtn.addEventListener("click", async () => {
-    const email = emailInput.value;
-    const password = passwordInput.value;
+    const name = nameInput.value;
+    const pin = pinInput.value;
     const response = await fetch("/api/login", {
         method: "POST",
         credentials: "include",
@@ -831,8 +831,8 @@ loginBtn.addEventListener("click", async () => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            email,
-            password
+            name,
+            pin
         })
     });
     const data = await response.json();
@@ -846,8 +846,8 @@ loginBtn.addEventListener("click", async () => {
 });
 
 signupBtn.addEventListener("click", async () => {
-    const email = emailInput.value;
-    const password = passwordInput.value;
+    const name = nameInput.value;
+    const pin = pinInput.value;
     const response = await fetch("/api/signup", {
         method: "POST",
         credentials: "include",
@@ -855,8 +855,8 @@ signupBtn.addEventListener("click", async () => {
             "Content-Type": "application/json"
         },
         body: JSON.stringify({
-            email,
-            password
+            name,
+            pin
         })
     });
     const data = await response.json();

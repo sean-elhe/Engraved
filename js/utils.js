@@ -43,5 +43,5 @@ export function showLoggedInUI() {
     authSection.classList.add("hidden");
     appSection.classList.remove("hidden");
     authTitle.textContent = "Account!";
-    passwordInput.value = "";
+    pinInput.value = "";
 }

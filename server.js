@@ -173,25 +173,33 @@ app.get("/api/chapter", (req, res) => {
 
 app.post("/api/signup", async (req, res) => {
 
-    const { email, password } = req.body;
+    const { name, pin } = req.body;
+    const FIXED_LENGTH = 4;
+    const numericRegex =
+        new RegExp(`^[0-9]{${FIXED_LENGTH}}$`);
+
+    if (!pin || !numericRegex.test(pin)) {
+        return res.status(400).json({
+            error: `PIN must be ${FIXED_LENGTH} digits long.`       
+        });
+    }
 
     try {
-
         const passwordHash =
-            await bcrypt.hash(password, 10);
+            await bcrypt.hash(pin, 10);
 
         db.run(`
-            INSERT INTO users (email, password_hash)
+            INSERT INTO users (name, password_hash)
             VALUES (?, ?)
         `,
-        [email, passwordHash],
+        [name, passwordHash],
         function(err) {
 
             if (err) {
 
                 if (err.message.includes("UNIQUE")) {
                     return res.status(400).json({
-                        error: "Email already exists"
+                        error: "Name already exists"
                     });
                 }
 
@@ -219,13 +227,13 @@ app.post("/api/signup", async (req, res) => {
 
 app.post("/api/login", async (req, res) => {
 
-    const { email, password } = req.body;
+    const { name, pin } = req.body;
 
     db.get(`
         SELECT * FROM users
-        WHERE email = ?
+        WHERE name = ?
     `,
-    [email],
+    [name],
     async (err, user) => {
 
         if (err) {
@@ -240,7 +248,7 @@ app.post("/api/login", async (req, res) => {
 
         const valid =
             await bcrypt.compare(
-                password,
+                pin,
                 user.password_hash
             );
 

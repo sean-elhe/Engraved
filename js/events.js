@@ -15,8 +15,8 @@ const closeSaved = document.getElementById("closeSaved");
 const savedScreen = document.getElementById("savedScreen");
 const practiceScreen = document.getElementById("practiceScreen"); // Grab your core practice interface wrapper
 const clearBtn = document.getElementById("clearBtn");
-const emailInput = document.getElementById("emailInput");
-const passwordInput = document.getElementById("passwordInput");
+const nameInput = document.getElementById("nameInput");
+const pinInput = document.getElementById("pinInput");
 const nextBtn = document.getElementById("nextBtn");
 
 // Add these to the top of events.js
@@ -241,7 +241,7 @@ export function initEventListeners() {
 
     // Authentication Handlers
     loginBtn.addEventListener("click", async () => {
-        const data = await apiLogin(emailInput.value, passwordInput.value);
+        const data = await apiLogin(nameInput.value, pinInput.value);
         if (data.success) {
             showLoggedInUI();
         } else {
@@ -250,7 +250,7 @@ export function initEventListeners() {
     });
 
     signupBtn.addEventListener("click", async () => {
-        const data = await apiSignup(emailInput.value, passwordInput.value);
+        const data = await apiSignup(nameInput.value, pinInput.value);
         if (data.success) {
             alert("Account created!");
         } else {
