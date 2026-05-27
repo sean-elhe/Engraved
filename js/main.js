@@ -8,12 +8,16 @@ async function initializeApp() {
     fillDifficultyDropdown();
     initEventListeners(); // This will now handle the overlays too!
 
-    await loadTranslations();
-    state.selectedTranslation = document.getElementById("translationSelect").value;
-
-    await loadBooks();
-    await loadChapters();
-    await loadChapter();
+    try {
+        // 1. Fetch translations and recover saved choice from localStorage
+        await loadTranslations(); 
+        
+        // 2. Kick off the cascade: loadBooks() -> loadChapters() -> loadChapter()
+        await loadBooks(); 
+        
+    } catch (error) {
+        console.error("Initialization failed:", error);
+    }
 
     checkLogIn();
 }

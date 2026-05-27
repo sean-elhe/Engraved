@@ -8,44 +8,91 @@ import { setupInputLogic } from './events.js'; // imported dynamically to bridge
 export async function loadTranslations() {
     const translations = await apiFetchTranslations();
     const translationSelect = document.getElementById("translationSelect");
-    translationSelect.innerHTML = "";
+    
+    // Clear and build using proper backticks ``
+    translationSelect.innerHTML = translations.map(item => `
+        <option value="${item.translation}">${item.translation}</option>
+    `).join('');
 
-    translations.forEach(item => {
-        translationSelect.innerHTML += `
-            <option value="${item.translation}">${item.translation}</option>
-        `;
-    });
+    // Restore persistence layer
+    const savedTranslation = localStorage.getItem("selectedTranslation");
+    if (savedTranslation) {
+        state.selectedTranslation = savedTranslation;
+    } else if (translations.length > 0) {
+        state.selectedTranslation = translations[0].translation;
+    }
+
     translationSelect.value = state.selectedTranslation;
 }
 
 export async function loadBooks() {
+    // 🔍 ADD THIS LOG LINE HERE:
+    console.log("Fetching books for translation:", state.selectedTranslation);
+
     const books = await apiFetchBooks(state.selectedTranslation);
     const bookSelect = document.getElementById("bookSelect");
-    bookSelect.innerHTML = "";
-
-    books.forEach(book => {
-        bookSelect.innerHTML += `
-            <option value="${book.book_id}">${book.book}</option>
-        `;
-    });
-
-    if (bookSelect.options.length > 0 && bookSelect.selectedIndex === -1) {
-        bookSelect.selectedIndex = 0;
+    
+    if (!books || books.length === 0) {
+        console.error("No books returned from API. Received:", books);
+        return;
     }
-    console.log("Books loaded");
+
+    // 1. Render to the DOM
+    bookSelect.innerHTML = books.map(book => `
+        <option value="${book.book_id}">${book.book}</option>
+    `).join('');
+
+    const savedBookId = localStorage.getItem("selectedBookId");
+    const savedBookExists = books.some(b => b.book_id = savedBookId);
+
+    if (savedBookId && savedBookExists) {
+        bookSelect.value = savedBookId;
+    } else {
+        bookSelect.selectedIndex = 0;
+        localStorage.setItem("selectedBookId", bookSelect.value);
+    }
+
+    console.log("Books loaded into DOM");
+
+    const currentBookName = bookSelect.options[bookSelect.selectedIndex].text;
+    await loadChapters(currentBookName);
 }
 
-export async function loadChapters() {
-    const chapters = await apiFetchChapters(state.selectedTranslation, getBookName());
-    const chapterSelect = document.getElementById("chapterSelect");
-    chapterSelect.innerHTML = "";
+export async function loadChapters(fallbackBookName) {
+    const bookName = fallbackBookName || getBookName();
+    
+    if (!bookName) {
+        console.warn("loadChapters aborted: No book name available yet.");
+        return;
+    }
 
-    chapters.forEach(chapter => {
-        chapterSelect.innerHTML += `
-            <option value="${chapter}">${chapter}</option>
-        `;
-    });
-    chapterSelect.selectedIndex = 0;
+    const chapters = await apiFetchChapters(state.selectedTranslation, bookName);
+    const chapterSelect = document.getElementById("chapterSelect");
+    
+    if (!chapters || chapters.length === 0) {
+        console.error("No chapters found for book:", bookName);
+        return;
+    }
+
+    chapterSelect.innerHTML = chapters.map(chapter => `
+        <option value="${chapter}">${chapter}</option>
+    `).join('');
+    
+    // PERSISTENCE: Check if they have a saved chapter
+    const savedChapter = localStorage.getItem("selectedChapter");
+    const savedChapterExists = chapters.some(c => c == savedChapter);
+
+    if (savedChapter && savedChapterExists) {
+        chapterSelect.value = savedChapter;
+    } else {
+        chapterSelect.selectedIndex = 0;
+        localStorage.setItem("selectedChapter", chapterSelect.value);
+    }
+
+    console.log("Chapters loaded into DOM");
+
+    // CASCADE: Pass selected parameters down to load the final text
+    await loadChapter(bookName, chapterSelect.value);
 }
 
 export function setupVerseOrder() {
@@ -54,24 +101,46 @@ export function setupVerseOrder() {
         return;
     }
 
+    // 1. PERSISTENCE: Check if a mode preference is saved in localStorage
+    const savedMode = localStorage.getItem("selectedVerseMode");
+    if (savedMode) {
+        state.verseMode = savedMode; // Keep the global state in sync
+    }
+
+    // 2. Apply the sorting logic based on the synced mode
     if (state.verseMode === "random") {
         state.verseOrder = ensureNoSequences(shuffleArray(state.currentChapter.verses));
     } else {
         state.verseOrder = state.currentChapter.verses;
     }
+    
     state.verseOrderIndex = 0;
+
+    const modeSelect = document.getElementById("modeSelect");
+    if (modeSelect) {
+        modeSelect.value = state.verseMode;
+    }
 }
 
-export async function loadChapter() {
-    const verses = await apiFetchChapter(state.selectedTranslation, getBookName(), getChapter());
+export async function loadChapter(fallbackBookName, fallbackChapterNum) {
+    // Use passed parameters if available (on startup), or read the DOM (on user select)
+    const bookName = fallbackBookName || getBookName();
+    const chapterNum = fallbackChapterNum || getChapter();
 
-    if (!Array.isArray(verses)) {
-        console.error("Invalid chapter response:", verses);
+    if (!bookName || !chapterNum) {
+        console.warn(`Aborting loadChapter: Book (${bookName}) or Chapter (${chapterNum}) dropdown is not ready yet.`);
+        return;
+    }
+
+    const verses = await apiFetchChapter(state.selectedTranslation, bookName, chapterNum);
+
+    if (!Array.isArray(verses) || verses.length === 0) {
+        console.error("No verses found for:", bookName, chapterNum);
         return;
     }
 
     state.currentChapter = {
-        chapter: getChapter(),
+        chapter: chapterNum,
         verses: verses
     };
 
@@ -141,7 +210,13 @@ export function displayVerseWords() {
 export function displayCurrentVerse() {
     startVerseTime();
     const verse = state.verseOrder[state.verseOrderIndex];
-    document.getElementById("reference").textContent = `${verse.book} ${verse.chapter}:${verse.verse}`;
+
+    if (!verse) {
+        console.warn("displayCurrentVerse called, but no verse data is available yet.");
+        return;
+    }
+
+    document.getElementById("reference").textContent = `${verse.book} ${verse.chapter}`;
 
     const difficulty = document.getElementById("difficultySelect").value;
     state.currentVerseDisplay = replacingWords(verse.text, difficulty);

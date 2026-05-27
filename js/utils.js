@@ -16,15 +16,26 @@ export function getChapter() {
 
 export function fillDifficultyDropdown() {
     const difficultySelect = document.getElementById("difficultySelect");
-    difficultySelect.innerHTML = "";
+    if (!difficultySelect) return;
 
-    state.difficultyLevels.forEach(level => {
-        difficultySelect.innerHTML += `
-            <option value="${level}">
-                ${level}
-            </option>
-        `;
-    });
+    // 1. Build the dropdown options efficiently
+    difficultySelect.innerHTML = state.difficultyLevels.map(level => `
+        <option value="${level}">${level}</option>
+    `).join('');
+
+    // 2. PERSISTENCE: Look for a saved difficulty choice
+    const savedDifficulty = localStorage.getItem("selectedDifficulty");
+    
+    // Check if the saved choice is actually valid according to our state array
+    const isValidLevel = state.difficultyLevels.includes(savedDifficulty);
+
+    if (savedDifficulty && isValidLevel) {
+        difficultySelect.value = savedDifficulty;
+    } else {
+        // Fallback to the first option if nothing is saved yet (e.g., "Easy")
+        difficultySelect.selectedIndex = 0;
+        localStorage.setItem("selectedDifficulty", difficultySelect.value);
+    }
 }
 
 export function clearInputs() {

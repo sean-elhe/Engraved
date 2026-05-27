@@ -44,23 +44,36 @@ function getChapter() {
 
 
 async function loadTranslations() {
-    const response = await fetch("/api/translations");
-    const translations = await response.json();
+    try {
+        const response = await fetch("/api/translations");
+        if (!response.ok) throw new Error("Network response was not ok");
+        const translations = await response.json();
+        const translationSelect =
+            document.getElementById("translationSelect");
 
-    const translationSelect =
-        document.getElementById("translationSelect");
+        let optionsHTML = "";
+        translations.forEach(item => {
+            optionsHTML += `
+                <option value="${item.translation}">
+                    ${item.translation}
+                </option>
+            `;
+        });
+        
+            // Update the DOM just once
+        translationSelect.innerHTML = optionsHTML;
 
-    translationSelect.innerHTML = "";
+        const savedTranslation = localStorage.getItem("selectedTranslation");
 
-    translations.forEach(item => {
-        translationSelect.innerHTML += `
-            <option value="${item.translation}">
-                ${item.translation}
-            </option>
-        `;
-    });
+        if (savedTranslation) {
+            translationSelect.value = savedTranslation;
+        } else if (translations.length > 0) {
+            translationSelect.value = translations[0].translation;
+        }
 
-    translationSelect.value = selectedTranslation;
+    } catch (error) {
+        console.error("Failed to load translations:", error)
+    }
 }
 
 async function loadBooks() {

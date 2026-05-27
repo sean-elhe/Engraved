@@ -1,7 +1,7 @@
 // This acts as your custom "buttons.js". All click configurations live here.
 import { state, resetScore } from './state.js';
 import { getBookId, getBookName, getChapter, clearInputs, showLoggedInUI, showLoggedOutUI } from './utils.js';
-import { loadBooks, loadChapters, loadChapter, displayCurrentVerse, calculateScore, displayVerseWords, showScoreScreen, handleNext, loadSavedChaptersUI } from './render.js';
+import { loadBooks, loadChapters, loadChapter, displayCurrentVerse, calculateScore, displayVerseWords, showScoreScreen, handleNext, loadSavedChaptersUI,setupVerseOrder } from './render.js';
 import { apiLogin, apiSignup, apiLogout, apiSaveChapter } from './api.js';
 
 // --- Dom Element Targets ---
@@ -117,27 +117,47 @@ export function initEventListeners() {
 
     // Dropdown updates
     document.getElementById("translationSelect").addEventListener("change", async event => {
-        state.selectedTranslation = event.target.value;
+        const newlySelected = event.target.value;
+        
+        // 1. Force the permanent state change instantly
+        localStorage.setItem("selectedTranslation", newlySelected);
+        state.selectedTranslation = newlySelected; 
+        
+        // 2. Now run your daisy-chained data fetches using the fresh state values
         await loadBooks();
         await loadChapters();
         await loadChapter();
     });
 
     document.getElementById("bookSelect").addEventListener("change", async () => {
-        await loadChapters();
-        await loadChapter();
+        const newlySelectedBook = event.target.value;
+        localStorage.setItem("selectedBookId", newlySelectedBook);
+        const bookName = event.target.options[event.target.selectedIndex].text;
+        await loadChapters(bookName);
     });
 
     document.getElementById("chapterSelect").addEventListener("change", async () => {
+        const newlySelectedChapter = event.target.value;
+        localStorage.setItem("selectedChapter", newlySelectedChapter);
         await loadChapter();
     });
 
     document.getElementById("difficultySelect").addEventListener("change", () => {
+        const newlySelectedDifficulty = event.target.value;
+        localStorage.setItem("selectedDifficulty", newlySelectedDifficulty);
+        
         displayCurrentVerse();
     });
 
     document.getElementById("modeSelect").addEventListener("change", event => {
-        state.verseMode = event.target.value;
+        const newMode = event.target.value;
+        
+        // 1. Save it to localStorage instantly
+        localStorage.setItem("selectedVerseMode", newMode);
+        
+        // 2. Update your live application state tracking variable
+        state.verseMode = newMode;
+        
         setupVerseOrder();
         displayCurrentVerse();
     });
