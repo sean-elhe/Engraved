@@ -2,6 +2,23 @@
 
 // api.js
 
+// Add this helper function if it doesn't exist
+async function handleResponse(response) {
+    if (!response.ok) {
+        // Grab error message from server if available, otherwise fallback
+        const errorText = await response.text();
+        throw new Error(errorText || `HTTP error! Status: ${response.status}`);
+    }
+    
+    // If your API returns empty text on success (common for logouts)
+    const contentType = response.headers.get("content-type");
+    if (contentType && contentType.includes("application/json")) {
+        return await response.json();
+    }
+    
+    return { success: true };
+}
+
 export async function apiFetchTranslations() {
     const response = await fetch("/api/translations");
     return await response.json();
