@@ -14,106 +14,113 @@
 </head>
 
 <body>
-  <main id="practiceScreen" class="card">
+  <main id="practiceScreen">
 
-    <div class="bottom">
-      <div class="top-row">
+    <div class="first-card">
+      <div class="header">
+        <div class="top-row">
 
-        <button id="openSettings" class="icon-btn settings-open">
-            <i class="fa-solid fa-gear"></i>
-        </button>
+            <button id="openSettings" class="icon-btn settings-open">
+                    <i class="fa-solid fa-gear"></i>
+                </button>
+            <div id="settingsOverlay" class="modal-overlay hidden">
+                <div class="modal-content theme-sand">
 
-      <div id="settingsOverlay" class="modal-overlay hidden">
-        <div class="modal-content theme-sand">
+                  <div class="menu-header">
+                    <h2>Settings</h2>
+                    <button id="closeSettings" class="icon-btn close-btn">
+                      <i class="fa-solid fa-xmark"></i>
+                    </button>
+                  </div>
 
-          <div class="menu-header">
-            <h2>Settings</h2>
-            <button id="closeSettings" class="icon-btn close-btn">
-              <i class="fa-solid fa-xmark"></i>
-            </button>
-          </div>
+                      <div class="selectors">
+                        <select id="bookSelect"></select>
+                        <select id="chapterSelect"></select>
+                        <select id="translationSelect"></select>
+                        <select id="difficultySelect"></select>
+                        <select id="modeSelect">
+                          <option value="ordered">Sequential</option>
+                          <option value="random">Randomized</option>
+                        </select>
+                      </div>
+                  </div>
+                </div>
+                
+            <h3 id="reference"></h3>
 
-              <div class="selectors">
-                <select id="bookSelect"></select>
-                <select id="chapterSelect"></select>
-                <select id="translationSelect"></select>
-                <select id="difficultySelect"></select>
-                <select id="modeSelect">
-                  <option value="ordered">Sequential</option>
-                  <option value="random">Randomized</option>
-                </select>
+            <button id="openAuth" class="icon-btn logIn">
+                    <i class="fa-solid fa-heart"></i>
+                </button>
+            <div id="authOverlay" class="modal-overlay hidden">
+                <div class="modal-content theme-light">
+
+                  <div class="menu-header">
+                    <h2 id="authTitle">Account</h2>
+                    <div class="header-controls">
+                      <button id="closeSaved" class="icon-btn hidden">
+                        <i class="fa-solid fa-arrow-left"></i>
+                      </button>
+                      <button id="closeAuth" class="icon-btn close-btn">
+                        <i class="fa-solid fa-xmark"></i>
+                      </button>
+                    </div>
+                  </div>
+
+                  <div id="authSection" class="hidden">
+                      <input id="nameInput" placeholder="User">
+                      <input id="pinInput" type="password" placeholder="PIN">
+                      <button id="loginBtn" class="authBtn">Log into account</button>
+                      <button id="signupBtn" class="authBtn">Create account</button>
+                  </div>
+
+                  <div id="appSection" class="hidden">
+                      <button id="preferencesUI" class="dashboard-tab-btn">Preferences</button>
+                      <button id="savedUI" class="dashboard-tab-btn">Bookmarks</button>
+                      <button id="scoresUI" class="dashboard-tab-btn">Scores</button>
+                      <button id="logoutBtn" class="authBtn">Logout</button>
+                  </div>
+
+                  <div id="savedScreen" class="hidden">
+                      <div class="saved-chapters-section">
+                          <div id="savedChaptersContainer" class="saved-chapters-grid"></div>
+                      </div>
+                  </div>
+
+                </div>
+              </div>
+              
+          </div> 
+          
+          <div class="second-row">
+              <div class="progress-row">
+                  <span id="progressCurrent"></span>
+                  <span id="progressTotal"></span>
+              </div>
+              <div class="progress-bar">
+                  <div id="progressFill" class="progress-fill"></div>
               </div>
           </div>
-        </div>
 
-        <h3 id="reference"></h3>
-
-        <button id="openAuth" class="icon-btn logIn">
-            <i class="fa-solid fa-heart"></i>
-        </button>
-
-<div id="authOverlay" class="modal-overlay hidden">
-  <div class="modal-content theme-light">
-
-    <div class="menu-header">
-      <h2 id="authTitle">Account</h2>
-      <div class="header-controls">
-        <button id="closeSaved" class="icon-btn hidden">
-          <i class="fa-solid fa-arrow-left"></i>
-        </button>
-        <button id="closeAuth" class="icon-btn close-btn">
-          <i class="fa-solid fa-xmark"></i>
-        </button>
-      </div>
-    </div>
-
-    <div id="authSection" class="hidden">
-        <input id="nameInput" placeholder="User">
-        <input id="pinInput" type="password" placeholder="PIN">
-        <button id="loginBtn" class="authBtn">Log into account</button>
-        <button id="signupBtn" class="authBtn">Create account</button>
-    </div>
-
-    <div id="appSection" class="hidden">
-        <button id="preferencesUI" class="dashboard-tab-btn">Preferences</button>
-        <button id="savedUI" class="dashboard-tab-btn">Bookmarks</button>
-        <button id="scoresUI" class="dashboard-tab-btn">Scores</button>
-        <button id="logoutBtn" class="authBtn">Logout</button>
-    </div>
-
-    <div id="savedScreen" class="hidden">
-        <div class="saved-chapters-section">
-            <div id="savedChaptersContainer" class="saved-chapters-grid"></div>
-        </div>
-    </div>
-
-  </div>
-</div>
-         </div> </div> 
-          
-        <div class="progress-container-wrapper">
-        <div class="progress-row">
-            <span id="progressCurrent"></span>
-            <span id="progressTotal"></span>
-        </div>
-        <div class="progress">
-            <div id="progressFill" class="progress-fill"></div>
-        </div>
     </div>
 
     <button id="hintBtn" class="hintBtn hidden">HINT</button>
 
-    <div class="center">
+    <div class="main">
+
       <div class="verse-wrapper">
+
         <button id="clearBtn" class="edge-btn left">
             <i class="fa-solid fa-chevron-left"></i>
         </button>
+
         <div class="verse-card">
           <p id="verseText"></p>
         </div>
+
         <button id="nextBtn" class="edge-btn right">
             <i class="fa-solid fa-chevron-right"></i>
         </button>  
+        
       </div>  
     </div>  
 
@@ -149,6 +156,7 @@
     </div>
 
     <button id="restartBtn" class="practice-btn">↻ Practice Again</button>
+    </div>
   </main>
 
   <script type="module" src="js/main.js"></script>

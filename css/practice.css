@@ -112,52 +112,72 @@ select {
    ========================================================================== */
 .verse-wrapper {
     position: relative;
+    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
 }
 
 .verse-card {
-    font-family: "EB Garamond", serif;
-    background: #fffaf1;
-    border: 1px solid #eadbc6;
-    border-radius: 28px;
-    box-shadow: 0 12px 28px rgba(0,0,0,0.08);
-    display: flex;
-    justify-content: center;
-    padding: 52px 30px;
     width: 100%;
-    min-height: 400px;
-    max-width: 900px;
+    max-width: 520px;
+    min-height: clamp(420px, 50vh, 620px);
+    padding: 56px 44px;
+    border-radius: 32px;
+    background:
+      linear-gradient(
+        180deg,
+        #FFFDF9,
+        #F7EFE2
+      );
+    box-shadow:
+      0 2px 6px rgba(0,0,0,0.03),
+      0 16px 40px rgba(182,150,90,0.08);
 }
 
-.verseText {
+
+#verseText {
     font-family: "EB Garamond", serif;
     text-align: center;
-    color: #222;
+    font-size: var(--text-lg);
+    max-width: 18ch;
+    margin: 0 auto;
+    line-height: 1.8;    
+    font-weight: 500;
+    color: #1E1B18;
+    max-width: 22ch;
 }
 
 .verseInput {
     width: 1ch;
+    min-width: 6ch;
     height: 38px;
-    border: 2px dashed #aaa17f;
-    border-radius: 14px;
+        border: 
+            2px dashed rgba(201,170,120,0.45);
+        background:
+            rgba(255,255,255,0.55);
+        transition: all 0.2s ease;    border-radius: 16px;
     padding: 2px;
     background: #fbf8f1;
     color: #222820;
+    line-height: 1.85;
+
     font-family: "EB Garamond", Georgia, serif;
-    font-size: 30px;
+    font-size: 24px;
     text-align: center;
     outline: none;
     box-shadow: 0 8px 20px rgba(70, 55, 35, 0.08);
-    transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
 }
+
+
 
 .verseInput:focus {
     border-color: #7f875a;
     background: #fffdf8;
-    box-shadow: 0 0 0 4px rgba(127, 135, 90, 0.15),
-                0 8px 20px rgba(70, 55, 35, 0.12);
+    transform: scale(1.03);
+
+    box-shadow:
+      0 4px 12px rgba(201,170,120,0.18);
 }
 
 .correctWord {
@@ -202,22 +222,30 @@ select {
 
 .edge-btn {
     position: absolute;
-    top: 60%;
+
+    top: 50%;
     transform: translateY(-50%);
-    width: 48px;
-    height: 48px;
-    border-radius: 999px;
+
+    width: 52px;
+    height: 52px;
+
+    border-radius: 50%;
+
     border: none;
-    color: gainsboro;
-    background: transparent;
-    font-size: 36px;
-    font-weight: bolder;
-    cursor: pointer;
+
+    background:
+      rgba(255,255,255,0.72);
+
+    backdrop-filter: blur(10px);
+
+    box-shadow:
+      0 4px 12px rgba(0,0,0,0.06);
+
     z-index: 5;
 }
 
-.edge-btn.left { left: -22px; }
-.edge-btn.right { right: -22px; }
+.edge-btn.left { left: -26px; }
+.edge-btn.right { right: -26px; }
 
 .controls {
     display: flex;
@@ -230,25 +258,26 @@ select {
 .progress-row {
     display: flex;
     justify-content: space-between;
-    font-size: 14px;
-    color: #6b7280;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
-.progress {
-    width: 100%;
-    height: 10px;
-    background: #ece4d8;
+.progress-bar {
+    height: 5px;
     border-radius: 999px;
+    background: rgba(201,170,120,0.15);
     overflow: hidden;
-    margin-top: 8px;
-    margin-bottom: 18px;
+    /* margin-bottom: 36px; */
 }
 
 .progress-fill {
     height: 100%;
     width: 0%;
-    background: linear-gradient(to right, #c8924e, #ddb170);
+    background:
+    linear-gradient(
+        90deg,
+        #C9974D,
+        #D9B06A
+    );
     border-radius: inherit;
     transition: width 0.35s ease;
 }
@@ -261,11 +290,6 @@ select {
         text-align: center;
 }
 
-.verseInput {
-        min-width: 6ch;
-        font-size: 28px;
-        line-height: 1.85;
-}
 
 
 

@@ -8,6 +8,14 @@
 @import url('./css/modals.css');
 @import url('./css/scores.css');
 
+:root {
+  --text-xs: 13px;
+  --text-sm: 15px;
+  --text-md: 18px;
+  --text-lg: 24px;
+  --text-xl: 32px;
+  --text-2xl: 40px;
+}
 
 
 /* ==========================================================================
@@ -17,8 +25,13 @@
     body {
         justify-content: center;
         align-items: stretch;
-        padding: 0;
-        background: #F9F6EE;
+        padding: 16px;
+        background:
+          linear-gradient(
+            180deg,
+            #F7F1E8,
+            #EEE5D7
+          );
         font-size: 18px;
     }
 
@@ -31,15 +44,27 @@
 
     .card {
         box-sizing: border-box;
-        width: 100%;
         border: none;
-        border-radius: 28px 28px 0 0;
-        box-shadow: none;
         border-width: 4px;
-        padding: 1px 9px;
-        min-height: 85vh;
+        padding: 28px 24px;
         display: flex;
         flex-direction: column;
+        width: 100%;
+        min-height: auto;
+
+        border-radius: 32px;
+
+        background:
+          linear-gradient(
+            180deg,
+            #FFFDF8,
+            #F8F0E4
+          );
+
+        box-shadow:
+          0 2px 10px rgba(0,0,0,0.03),
+          0 20px 40px rgba(180,140,70,0.08);
+
     }
 
     .selector-row {
