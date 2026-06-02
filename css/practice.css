@@ -189,12 +189,13 @@ select {
 }
 
 .correctWord {
-    border-bottom: 3px solid #2e7d32; /* Solid green underline */
+    color: #c8924e;
+    text-decoration: underline;
 }
 
 .wrongWord {
-    border-bottom: 3px dashed #c62828; /* Dashed red underline */
-    color: #9e9e9e; /* Fade out the incorrect text slightly */
+    color: #80011F;
+    text-decoration: underline;
 }
 
 /* Gameplay Buttons */
