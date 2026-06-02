@@ -218,3 +218,23 @@
 .rotate-arrow {
     transform: rotate(180deg);
 }
+
+
+
+/* Ensure the history containers look identical */
+#scoreHistoryContainer {
+    max-height: 250px;
+    overflow-y: auto;
+    margin-top: 15px;
+}
+
+/* Subtle visual distinction for score rows if desired */
+.score-history-row {
+    border-left: 4px solid #4a90e2; /* Gives scores a clean blueprint blue accent line */
+    margin-bottom: 8px;
+}
+
+.score-label-btn {
+    text-align: left;
+    font-weight: 500;
+}

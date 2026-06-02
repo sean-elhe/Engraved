@@ -197,7 +197,7 @@ export function displayVerseWords() {
         } else {
             htmlChunk = `<span>${item.word}</span>`;        
     }
-    
+
     verseText.innerHTML += htmlChunk + " ";    });
 
     if (state.stage === 1) {
@@ -265,13 +265,22 @@ export function showInfoScreen() {
 }
 
 export function showScoreScreen() {
+    saveChapterScore();
+
     document.getElementById("practiceScreen").classList.add("hidden");
     document.getElementById("scoreScreen").classList.remove("hidden");
 
+    const chapterScore = document.getElementById("chapterScore");
+    if (!chapterScore) {
+        console.warn("Could not find element with ID 'chapterScore'");
+        return;
+    }
     const chapterTotalTime = state.verseScores.reduce((sum, score) => sum + score.time, 0);
     const percent = state.totalHiddenWords === 0 ? 0 : Math.round((state.correctCount / state.totalHiddenWords) * 100);
 
     chapterScore.innerHTML += `
+
+
     <div class="chapter-score">
         <div class="chapter-score-top">
             <span class="chapter-score-title">${state.book?.book || getBookName()} ${state.currentChapter.chapter}</span>
@@ -314,6 +323,38 @@ export function showScoreScreen() {
     });
 }
 
+export function saveChapterScore() {
+    // 1. Calculate the values just like you do in showScoreScreen
+    const chapterTotalTime = state.verseScores.reduce((sum, score) => sum + score.time, 0);
+    const percent = state.totalHiddenWords === 0 ? 0 : Math.round((state.correctCount / state.totalHiddenWords) * 100);
+    const difficulty = document.getElementById("difficultySelect")?.value || "Normal";
+
+    // 2. Build the data object to be saved
+    const newScoreEntry = {
+        id: Date.now(), // Unique ID for later use
+        date: new Date().toLocaleDateString(),
+        book: state.book?.book || getBookName(),
+        chapter: state.currentChapter.chapter,
+        percent: percent,
+        correctCount: state.correctCount,
+        totalHiddenWords: state.totalHiddenWords,
+        totalTime: chapterTotalTime,
+        translation: state.selectedTranslation,
+        difficulty: difficulty,
+        hints: state.hintCount,
+        verseScores: state.verseScores // Saves the individual verse breakdown too
+    };
+
+    // 3. Get existing scores from localStorage or default to an empty array
+    const existingScores = JSON.parse(localStorage.getItem("engravedHistory")) || [];
+
+    // 4. Add the new score to the top of the history list
+    existingScores.unshift(newScoreEntry);
+
+    // 5. Save back to localStorage
+    localStorage.setItem("engravedHistory", JSON.stringify(existingScores));
+}
+
 export function handleNext() {
     if (state.stage === 1) {
         calculateScore();
@@ -333,6 +374,66 @@ export function handleNext() {
     }
 }
 
+export function loadScoreHistory() {
+    // Returns an array of all saved scores, or an empty array if none exist yet
+    return JSON.parse(localStorage.getItem("engravedHistory")) || [];
+}
+
+export function loadScoreHistoryUI() {
+    const scores = loadScoreHistory();
+    const savedScoresContainer = document.getElementById("scoreHistoryContainer");
+
+    if (!savedScoresContainer) return;
+    savedScoresContainer.innerHTML = "";
+
+    if (scores.length === 0) {
+        savedScoresContainer.innerHTML = "<p class='no-scores-msg'>No score history yet.</p>";
+        return;
+    }
+
+    scores.forEach(entry => {
+        // 1. Create a parent row container (matching .bookmark-row style)
+        const row = document.createElement("div");
+        row.className = "bookmark-row score-history-row";
+
+        // 2. Create the main text label area
+        const labelBtn = document.createElement("button");
+        labelBtn.className = "bookmark-label-btn score-label-btn";
+        
+        // Custom text showing Book, Chapter, Translation, and Percent
+        labelBtn.textContent = `${entry.book} ${entry.chapter} (${entry.translation}) — ${entry.percent}%`;
+        
+        // (Optional) Clicking a history row could show a detailed breakdown of that specific run
+        labelBtn.addEventListener("click", () => {
+            console.log("Viewing detailed score stats for run:", entry.id);
+            // You can add a function here to display its specific verseScores if desired!
+        });
+
+        // 3. Create a dedicated delete "X" button to clear an old score
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "bookmark-delete-btn score-delete-btn";
+        deleteBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+        deleteBtn.title = "Delete score entry";
+
+        deleteBtn.addEventListener("click", (e) => {
+            e.stopPropagation(); // Prevents clicking the row itself
+            
+            // Filter out this entry using its unique ID
+            const existingScores = loadScoreHistory();
+            const updatedScores = existingScores.filter(item => item.id !== entry.id);
+            
+            // Save updated array back to localStorage and re-render
+            localStorage.setItem("engravedHistory", JSON.stringify(updatedScores));
+            loadScoreHistoryUI(); 
+        });
+
+        // Assemble and append the elements
+        row.appendChild(labelBtn);
+        row.appendChild(deleteBtn);
+        savedScoresContainer.appendChild(row);
+    });
+}
+
 export async function loadSavedChaptersUI() {
     const chapters = await apiFetchSavedChapters();
     const savedChaptersContainer = document.getElementById("savedChaptersContainer");    console.log(chapters);
@@ -344,82 +445,82 @@ export async function loadSavedChaptersUI() {
         return;
     }
 
- // Inside loadSavedChaptersUI() in render.js
-chapters.forEach(chapter => {
-    // 1. Create a parent row container
-    const row = document.createElement("div");
-    row.className = "bookmark-row";
+    // Inside loadSavedChaptersUI() in render.js
+    chapters.forEach(chapter => {
+        // 1. Create a parent row container
+        const row = document.createElement("div");
+        row.className = "bookmark-row";
 
-    // 2. Create the main text label area (clicking this loads the chapter)
-    const labelBtn = document.createElement("button");
-    labelBtn.className = "bookmark-label-btn";
-    labelBtn.textContent = `${chapter.book} ${chapter.chapter} (${chapter.translation})`;
-    
-    labelBtn.addEventListener("click", async () => {
-        // ... Keep your exact same load chapter logic here ...
-        state.selectedTranslation = chapter.translation;
-        state.currentChapter = { chapter: chapter.chapter, verses: [] };
+        // 2. Create the main text label area (clicking this loads the chapter)
+        const labelBtn = document.createElement("button");
+        labelBtn.className = "bookmark-label-btn";
+        labelBtn.textContent = `${chapter.book} ${chapter.chapter} (${chapter.translation})`;
         
-        if (document.getElementById("translationSelect")) {
-            document.getElementById("translationSelect").value = chapter.translation;
-        }
-        
-        await loadChapter();
+        labelBtn.addEventListener("click", async () => {
+            // ... Keep your exact same load chapter logic here ...
+            state.selectedTranslation = chapter.translation;
+            state.currentChapter = { chapter: chapter.chapter, verses: [] };
+            
+            if (document.getElementById("translationSelect")) {
+                document.getElementById("translationSelect").value = chapter.translation;
+            }
+            
+            await loadChapter();
 
-        // Close out the modal panels
-        const authOverlay = document.getElementById("authOverlay");
-        if (authOverlay) {
-            authOverlay.classList.add("hidden");
-            document.getElementById("savedScreen").classList.add("hidden");
-            document.getElementById("appSection").classList.remove("hidden");
-            document.getElementById("authTitle").textContent = "Account!";
-            document.getElementById("closeSaved").classList.add("hidden");
-            document.getElementById("closeAuth").classList.remove("hidden");
+            // Close out the modal panels
+            const authOverlay = document.getElementById("authOverlay");
+            if (authOverlay) {
+                authOverlay.classList.add("hidden");
+                document.getElementById("savedScreen").classList.add("hidden");
+                document.getElementById("appSection").classList.remove("hidden");
+                document.getElementById("authTitle").textContent = "Account!";
+                document.getElementById("closeSaved").classList.add("hidden");
+                document.getElementById("closeAuth").classList.remove("hidden");
+            }
+        });
+
+        // 3. Create the dedicated delete "X" button
+        const deleteBtn = document.createElement("button");
+        deleteBtn.className = "bookmark-delete-btn";
+        deleteBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+        deleteBtn.title = "Delete bookmark";
+
+    // Inside your loadSavedChaptersUI() loop in render.js
+    deleteBtn.addEventListener("click", async (event) => {
+        event.stopPropagation(); // Stop row loading row selection frames from triggering
+
+        if (confirm(`Are you sure you want to delete the bookmark for ${chapter.book} ${chapter.chapter}?`)) {
+            try {
+                // Clean abstraction layer call!
+                const data = await apiDeleteChapter({
+                    translation: chapter.translation,
+                    book_id: chapter.book_id,
+                    chapter: chapter.chapter
+                });
+
+                if (data.success) {
+                    // Smoothly slide row away out of the active DOM grid view list 
+                    row.style.opacity = "0";
+                    row.style.transform = "translateX(20px)";
+                    setTimeout(() => {
+                        row.remove();
+                        if (savedChaptersContainer.children.length === 0) {
+                            savedChaptersContainer.innerHTML = "<p>No saved chapters found.</p>";
+                        }
+                    }, 200);
+                } else {
+                    alert(data.error || "Failed to remove bookmark.");
+                }
+            } catch (error) {
+                console.error("Deletion interface handler error:", error);
+                alert("Something went wrong trying to delete this item. Check your console logs.");
+            }
         }
     });
 
-    // 3. Create the dedicated delete "X" button
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "bookmark-delete-btn";
-    deleteBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
-    deleteBtn.title = "Delete bookmark";
-
-// Inside your loadSavedChaptersUI() loop in render.js
-deleteBtn.addEventListener("click", async (event) => {
-    event.stopPropagation(); // Stop row loading row selection frames from triggering
-
-    if (confirm(`Are you sure you want to delete the bookmark for ${chapter.book} ${chapter.chapter}?`)) {
-        try {
-            // Clean abstraction layer call!
-            const data = await apiDeleteChapter({
-                translation: chapter.translation,
-                book_id: chapter.book_id,
-                chapter: chapter.chapter
-            });
-
-            if (data.success) {
-                // Smoothly slide row away out of the active DOM grid view list 
-                row.style.opacity = "0";
-                row.style.transform = "translateX(20px)";
-                setTimeout(() => {
-                    row.remove();
-                    if (savedChaptersContainer.children.length === 0) {
-                        savedChaptersContainer.innerHTML = "<p>No saved chapters found.</p>";
-                    }
-                }, 200);
-            } else {
-                alert(data.error || "Failed to remove bookmark.");
-            }
-        } catch (error) {
-            console.error("Deletion interface handler error:", error);
-            alert("Something went wrong trying to delete this item. Check your console logs.");
-        }
-    }
-});
-
-    // 4. Assemble the row pieces together
-    row.appendChild(labelBtn);
-    row.appendChild(deleteBtn);
-    savedChaptersContainer.appendChild(row);
-});
+        // 4. Assemble the row pieces together
+        row.appendChild(labelBtn);
+        row.appendChild(deleteBtn);
+        savedChaptersContainer.appendChild(row);
+    });
 }

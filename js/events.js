@@ -1,7 +1,7 @@
 // This acts as your custom "buttons.js". All click configurations live here.
 import { state, resetScore } from './state.js';
 import { getBookId, getBookName, getChapter, clearInputs, showLoggedInUI, showLoggedOutUI } from './utils.js';
-import { loadBooks, loadChapters, loadChapter, displayCurrentVerse, calculateScore, displayVerseWords, showInfoScreen,showScoreScreen, handleNext, loadSavedChaptersUI,setupVerseOrder } from './render.js';
+import { loadBooks, loadChapters, loadChapter, displayCurrentVerse, calculateScore, displayVerseWords, showInfoScreen,showScoreScreen, handleNext, loadSavedChaptersUI, setupVerseOrder, loadScoreHistory, loadScoreHistoryUI } from './render.js';
 import { apiLogin, apiSignup, apiLogout, apiSaveChapter } from './api.js';
 
 // --- Dom Element Targets ---
@@ -10,6 +10,7 @@ const signupBtn = document.getElementById("signupBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const saveBtn = document.getElementById("saveBtn");
 const savedUI = document.getElementById("savedUI");
+const scoresUI = document.getElementById("scoresUI");
 const infoScreen = document.getElementById("infoScreen");
 
 const closeSaved = document.getElementById("closeSaved");
@@ -293,6 +294,7 @@ export function initEventListeners() {
 // Inside your initEventListeners() function in events.js
     const savedUI = document.getElementById("savedUI");
     const closeSaved = document.getElementById("closeSaved");
+    const scoresUI = document.getElementById("scoresUI");
     const closeAuth = document.getElementById("closeAuth"); // Make sure this is grabbed at the top
     const appSection = document.getElementById("appSection");
     const savedScreen = document.getElementById("savedScreen");
@@ -303,7 +305,7 @@ export function initEventListeners() {
         appSection.classList.add("hidden");
         savedScreen.classList.remove("hidden");
         
-        authTitle.textContent = "Bookmarks";
+        authTitle.textContent = "Your Bookmarks";
         
         // --- THE FIX ---
         closeSaved.classList.remove("hidden"); // Show the Back Arrow
@@ -311,6 +313,18 @@ export function initEventListeners() {
         
         loadSavedChaptersUI();
     });
+
+    scoresUI.addEventListener("click", () => {
+        appSection.classList.add("hidden");
+        scoresScreen.classList.remove("hidden");
+
+        authTitle.textContent = "Your Scores";
+
+        closeSaved.classList.remove("hidden"); // Show the Back Arrow
+        closeAuth.classList.add("hidden");    // Hide the Close "X" button!
+        
+        loadScoreHistoryUI();  
+      });
 
 // Clicking the Back arrow restores the root panel states seamlessly
 // Clicking the Back Arrow
