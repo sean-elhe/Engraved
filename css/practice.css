@@ -116,13 +116,11 @@ select {
     width: 100%;
     display: flex;
     align-items: center;
-    justify-content: center;
 }
 
 .verse-card {
     display: flex;
     flex-direction: column;
-    justify-content: center;
     width: 100%;
     max-width: 520px;
     min-height: clamp(420px, 50vh, 620px);
