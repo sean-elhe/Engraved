@@ -14,7 +14,7 @@ body {
     box-sizing: border-box;
     font-family: "Inter", sans-serif;
     color: black;
-    font-size: 18px;
+    font-size: 42px;
 }
 
 
@@ -82,7 +82,6 @@ body {
 #progressCurrent {
     font-size: var(--text-sm);
     font-weight: 500;
-    color: #72695F;
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }
@@ -90,7 +89,6 @@ body {
 #progressTotal {
     font-size: var(--text-sm);
     font-weight: 500;
-    color: #72695F;
     letter-spacing: 0.04em;
     text-transform: uppercase;
 }

@@ -261,6 +261,11 @@ export function calculateScore() {
     });
 }
 
+export function showInfoScreen() {
+    document.getElementById("practiceScreen").classList.add("hidden");
+    document.getElementById("infoScreen").classList.remove("hidden");
+}
+
 export function showScoreScreen() {
     document.getElementById("practiceScreen").classList.add("hidden");
     document.getElementById("scoreScreen").classList.remove("hidden");

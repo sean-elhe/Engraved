@@ -23,7 +23,6 @@
    ========================================================================== */
 @media (max-width: 600px) {
     body {
-        justify-content: center;
         align-items: stretch;
         padding: 16px;
         background:
@@ -88,13 +87,6 @@
         line-height: 1.15;
         text-align: center;
         margin: 22px 0 14px;
-    }
-
-    .verse-line,
-    #verseText {
-        font-size: 28px;
-        line-height: 1.85;
-        text-align: center;
     }
 
     .verseInput {
