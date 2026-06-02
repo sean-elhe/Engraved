@@ -182,25 +182,23 @@ export function displayVerseWords() {
     verseText.innerHTML = "";
 
     state.currentVerseDisplay.wordList.forEach(item => {
+        let htmlChunk = "";
+
+        
         if (item.isHidden) {
             if (state.stage === 2) {
                 const userInput = savedInputs[item.index] || "";
                 const isCorrect = closeAnswer(userInput, item.word);
-                verseText.innerHTML += `
-                    <span class="${isCorrect ? "correctWord" : "wrongWord"}">
-                        ${item.word}
-                    </span>
-                `;
+            
+                htmlChunk = `<span class="${isCorrect ? 'correctWord' : 'wrongWord'}">${item.word}</span>`;
             } else {
-                verseText.innerHTML += `
-                    <input class="verseInput" data-index="${item.index}" data-answer="${item.word}"/>
-                `;
+                htmlChunk = `<input class="verseInput" data-index="${item.index}" data-answer="${item.word}"/>`;
             }
         } else {
-            verseText.innerHTML += `<span>${item.word}</span>`;
-        }
-        verseText.innerHTML += " ";
-    });
+            htmlChunk = `<span>${item.word}</span>`;        
+    }
+    
+    verseText.innerHTML += htmlChunk + " ";    });
 
     if (state.stage === 1) {
         setupInputLogic();
