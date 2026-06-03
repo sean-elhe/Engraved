@@ -109,3 +109,24 @@ export async function apiDeleteChapter({ translation, book_id, chapter }) {
 
     return await response.json();
 }
+
+export async function apiSaveScore(payload) {
+    try {
+        const response = await fetch(`/api/save-score`, {
+            method: `POST`,
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Failed to save score.`);
+        }
+
+        const result = await response.json();
+        console.log(`Score saved succesfully:`,result);
+    } catch (error) {
+        console.error(`Error saving score:`, error);
+    }
+}

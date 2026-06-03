@@ -2,7 +2,7 @@
 import { state, startVerseTime, getVerseElapsedTime, resetScore } from './state.js';
 import { getBookName, getChapter, getBookId, showLoggedInUI, showLoggedOutUI } from './utils.js';
 import { shuffleArray, ensureNoSequences, formatTime, closeAnswer, replacingWords } from './logic.js';
-import { apiFetchTranslations, apiFetchBooks, apiFetchChapters, apiFetchChapter, apiCheckLogIn, apiFetchSavedChapters, apiDeleteChapter } from './api.js';
+import { apiFetchTranslations, apiFetchBooks, apiFetchChapters, apiFetchChapter, apiCheckLogIn, apiFetchSavedChapters, apiDeleteChapter, apiSaveScore } from './api.js';
 import { setupInputLogic } from './events.js'; // imported dynamically to bridge event setup
 
 export async function loadTranslations() {
@@ -265,20 +265,41 @@ export function showInfoScreen() {
 }
 
 export function showScoreScreen() {
+    // 1. Existing UI transitions
     document.getElementById("practiceScreen").classList.add("hidden");
     document.getElementById("scoreScreen").classList.remove("hidden");
 
+    // 2. Existing calculations
     const chapterTotalTime = state.verseScores.reduce((sum, score) => sum + score.time, 0);
     const percent = state.totalHiddenWords === 0 ? 0 : Math.round((state.correctCount / state.totalHiddenWords) * 100);
 
+    // ==========================================
+    // NEW: Prepare data for your SQL Table
+    // ==========================================
+    const scorePayload = {
+        score: state.correctCount, // Maps to "score"
+        total_questions: state.totalHiddenWords, // Maps to "total_questions"
+        percentage: percent, // Maps to "percentage"
+        translation: state.selectedTranslation, // Maps to "translation"
+        book: state.book?.book || getBookName(), // Maps to "book"
+        chapter: state.currentChapter.chapter, // Maps to "chapter"
+        difficulty: document.getElementById("difficultySelect").value, // Maps to "difficulty"
+        mode: state.mode || "standard" // Maps to "mode" (e.g., timed, practice, etc.)
+    };
+
+    // Trigger the database save
+    apiSaveScore(scorePayload);
+    // ==========================================
+
+    // 3. Your existing UI rendering code (unchanged)
     chapterScore.innerHTML += `
     <div class="chapter-score">
         <div class="chapter-score-top">
-            <span class="chapter-score-title">${state.book?.book || getBookName()} ${state.currentChapter.chapter}</span>
+            <span class="chapter-score-title">${scorePayload.book} ${scorePayload.chapter}</span>
             <span class="chapter-score-percent">${percent}%</span>
         </div>
         <div class="chapter-score-meta">
-            <span>${state.correctCount} / ${state.totalHiddenWords}</span>
+            <span>${scorePayload.score} / ${scorePayload.total_questions}</span>
             <span>${formatTime(chapterTotalTime)}</span>
         </div>
         <div class="big-progress">
@@ -287,8 +308,8 @@ export function showScoreScreen() {
     </div>
     `;
 
-    document.getElementById("translation").textContent = state.selectedTranslation;
-    document.getElementById("difficulty").textContent = document.getElementById("difficultySelect").value;
+    document.getElementById("translation").textContent = scorePayload.translation;
+    document.getElementById("difficulty").textContent = scorePayload.difficulty;
     document.getElementById("hints").textContent = state.hintCount;
 
     const verseScoreList = document.getElementById("verseScoreList");

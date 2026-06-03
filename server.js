@@ -442,30 +442,53 @@ app.get("/api/saved-chapters", (req, res) => {
 
 });
 
-
-
-app.post("/api/scores", (req, res) => {
-
+app.post("/api/save-score", (req, res) => {
     if (!req.session.userId) {
         return res.status(401).json({ error: "Not logged in" });
     }
 
     const userId = req.session.userId;
-    const { score, totalQuestions } = req.body;
+    
+    // 1. Destructure all the fields coming from your frontend payload
+    const { 
+        score, 
+        total_questions, 
+        percentage, 
+        translation, 
+        book, 
+        chapter, 
+        difficulty, 
+        mode 
+    } = req.body;
 
-    db.run(`
-        INSERT INTO user_scores (user_id, score, total_questions)
-        VALUES (?, ?, ?)
-    `, [userId, score, totalQuestions], (err) => {
+    // 2. Update the query to include all columns matching your table schema
+    const query = `
+        INSERT INTO user_scores (
+            user_id, score, total_questions, percentage, 
+            translation, book, chapter, difficulty, mode
+        )
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `;
 
+    // 3. Pass the values into the array in the EXACT same order as the columns above
+    db.run(query, [
+        userId, 
+        score, 
+        total_questions, 
+        percentage, 
+        translation, 
+        book, 
+        chapter, 
+        difficulty, 
+        mode
+    ], (err) => {
         if (err) {
+            console.error("Database INSERT error:", err.message);
             return res.status(500).json({ error: err.message });
         }
 
         res.json({ success: true });
-
     });
-
 });
 
 app.listen(PORT, "0.0.0.0", () => {
