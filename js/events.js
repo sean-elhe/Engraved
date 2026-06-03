@@ -1,7 +1,7 @@
 // This acts as your custom "buttons.js". All click configurations live here.
 import { state, resetScore } from './state.js';
 import { getBookId, getBookName, getChapter, clearInputs, showLoggedInUI, showLoggedOutUI } from './utils.js';
-import { loadBooks, loadChapters, loadChapter, displayCurrentVerse, calculateScore, displayVerseWords, showInfoScreen,showScoreScreen, handleNext, loadSavedChaptersUI,setupVerseOrder } from './render.js';
+import { loadBooks, loadChapters, loadChapter, displayCurrentVerse, calculateScore, displayVerseWords, showInfoScreen,showScoreScreen, handleNext, loadSavedChaptersUI,setupVerseOrder, loadSavedScoresUI } from './render.js';
 import { apiLogin, apiSignup, apiLogout, apiSaveChapter } from './api.js';
 
 // --- Dom Element Targets ---
@@ -11,6 +11,8 @@ const logoutBtn = document.getElementById("logoutBtn");
 const saveBtn = document.getElementById("saveBtn");
 const savedUI = document.getElementById("savedUI");
 const infoScreen = document.getElementById("infoScreen");
+const scoreScreen = document.getElementById("scoreScreen");
+const scoresUI = document.getElementById("scoresUI");
 
 const closeSaved = document.getElementById("closeSaved");
 const savedScreen = document.getElementById("savedScreen");
@@ -297,6 +299,8 @@ export function initEventListeners() {
     const appSection = document.getElementById("appSection");
     const savedScreen = document.getElementById("savedScreen");
     const authTitle = document.getElementById("authTitle");
+    const scoresUI = document.getElementById("scoresUI");
+    const scoresScreen = document.getElementById("scoresScreen");
 
 // Clicking Bookmarks updates title, reveals the back arrow, and transitions sub-views
     savedUI.addEventListener("click", () => {
@@ -312,10 +316,23 @@ export function initEventListeners() {
         loadSavedChaptersUI();
     });
 
+    scoresUI.addEventListener("click", () => {
+        appSection.classList.add("hidden");
+        scoresScreen.classList.remove("hidden");
+
+        authTitle.textContent = "Scores";
+
+        closeSaved.classList.remove("hidden"); // Show the Back Arrow
+        closeAuth.classList.add("hidden");    // Hide the Close "X" button!
+
+        loadSavedScoresUI();
+    });
+
 // Clicking the Back arrow restores the root panel states seamlessly
 // Clicking the Back Arrow
     closeSaved.addEventListener("click", () => {
         savedScreen.classList.add("hidden");
+        scoresScreen.classList.add("hidden");
         appSection.classList.remove("hidden");
         
         authTitle.textContent = "Account!";

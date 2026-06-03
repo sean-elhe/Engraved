@@ -2,7 +2,8 @@
 import { state, startVerseTime, getVerseElapsedTime, resetScore } from './state.js';
 import { getBookName, getChapter, getBookId, showLoggedInUI, showLoggedOutUI } from './utils.js';
 import { shuffleArray, ensureNoSequences, formatTime, closeAnswer, replacingWords } from './logic.js';
-import { apiFetchTranslations, apiFetchBooks, apiFetchChapters, apiFetchChapter, apiCheckLogIn, apiFetchSavedChapters, apiDeleteChapter, apiSaveScore } from './api.js';
+import { apiFetchTranslations, apiFetchBooks, apiFetchChapters, apiFetchChapter, apiCheckLogIn, apiFetchSavedChapters, apiDeleteChapter, 
+    apiSaveScore, apiFetchSavedScores, apiDeleteScore } from './api.js';
 import { setupInputLogic } from './events.js'; // imported dynamically to bridge event setup
 
 export async function loadTranslations() {
@@ -443,4 +444,85 @@ deleteBtn.addEventListener("click", async (event) => {
     row.appendChild(deleteBtn);
     savedChaptersContainer.appendChild(row);
 });
+}
+
+export async function loadSavedScoresUI() {
+    try {
+        const scores = await apiFetchSavedScores();
+        const savedScoresContainer = document.getElementById("savedScoresContainerS");
+
+        if (!savedScoresContainer) return;
+        savedScoresContainer.innerHTML = "";
+
+        if (!scores || scores.length === 0) {
+            savedScoresContainer.innerHTML = "<p>No saved scores</p>";
+            return;
+        }
+
+        scores.forEach(session => {
+            const row = document.createElement("div");
+            row.className = "saved-score-row";
+
+            const infoDiv = document.createElement("div");
+            infoDiv.className = "saved-score-info";
+
+            const cleanDate = session.completed_at ? session.completed_at.slice(0, 10) : "";
+
+            infoDiv.innerHTML = `
+                <div class="saved-score-top">
+                    <span class="saved-score-title">
+                        ${session.book} ${session.chapter}
+                    </span>
+                    <span class="saved-score-percent">
+                        ${Math.round(session.percentage)}%
+                    </span>
+                <div class="saved-score-meta">
+                        <span>${session.score} / ${session.total_questions} correct</span>
+                        <span>${session.translation} • ${session.difficulty}</span>
+                        <span class ="saved-score-date">${cleanDate}</span>
+                </div>
+                <div class="mini-saved-progress">
+                        <div class="mini-history-progress-fill" style="width: ${session.percentage}%"></div>
+                </div>
+                </div>
+            `;
+
+            const deleteBtn = document.createElement("button");
+            deleteBtn.className = "score-delete-btn";
+            deleteBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
+            deleteBtn.title = "Delete score";
+
+                    deleteBtn.addEventListener("click", async () => {
+                        event.stopPropagation();
+
+                        if (confirm(`Are you sure you want to delete this score for ${session.book} ${session.chapter}?`)) {
+                            try {
+                                const data = await apiDeleteScore(session.id);
+
+                                if (data.success) {
+                                    row.style.opacity = "0";
+                                    row.style.transform = "translateX(20px)";
+                                    setTimeout(() => {
+                                        row.remove();
+                                        if (savedScoresContainer.children.length === 0) {
+                                            savedScoresContainer.innerHTML = "<p>No saved scores found.</p>";
+                                        }
+                                    }, 200);
+                                } else {
+                                    alert(data.error || "Failed to delete score.");
+                                }
+                            } catch (error) {
+                                console.error("Score deletion error:", error);
+                                alert("Something went wrong trying to delete this score. Check your console logs.");
+                            }
+                        }
+                    });
+
+                    row.appendChild(infoDiv);
+                    row.appendChild(deleteBtn);
+                    savedScoresContainer.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Error loading saved scores:", error);
+            }
 }

@@ -442,14 +442,14 @@ app.get("/api/saved-chapters", (req, res) => {
 
 });
 
-app.post("/api/save-score", (req, res) => {
+// 1. ENDPOINT TO SAVE A NEW SCORE
+app.post("/api/scores", (req, res) => {
     if (!req.session.userId) {
         return res.status(401).json({ error: "Not logged in" });
     }
 
     const userId = req.session.userId;
     
-    // 1. Destructure all the fields coming from your frontend payload
     const { 
         score, 
         total_questions, 
@@ -461,7 +461,6 @@ app.post("/api/save-score", (req, res) => {
         mode 
     } = req.body;
 
-    // 2. Update the query to include all columns matching your table schema
     const query = `
         INSERT INTO user_scores (
             user_id, score, total_questions, percentage, 
@@ -470,7 +469,6 @@ app.post("/api/save-score", (req, res) => {
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
     `;
 
-    // 3. Pass the values into the array in the EXACT same order as the columns above
     db.run(query, [
         userId, 
         score, 
@@ -489,6 +487,43 @@ app.post("/api/save-score", (req, res) => {
 
         res.json({ success: true });
     });
+});
+
+// 2. ENDPOINT TO GET SCORES (Moved out of the POST route)
+app.get("/api/scores", (req, res) => {
+    if (!req.session.userId) {
+        return res.status(401).json({ error: "Not logged in" });
+    }
+
+    db.all(`
+        SELECT id, score, total_questions, percentage, translation, book, chapter, difficulty, completed_at 
+        FROM user_scores 
+        WHERE user_id = ? 
+        ORDER BY completed_at DESC
+    `, [req.session.userId], (err, rows) => {
+        if (err) return res.status(500).json({ error: err.message });
+        res.json(rows);
+    });
+});
+
+// 3. ENDPOINT TO DELETE A SCORE (Cleaned up the URL path)
+app.delete("/api/scores/:id", (req, res) => {
+    if (!req.session.userId) return res.status(401).json({ error: "Not logged in" });
+
+    db.run(`
+        DELETE FROM user_scores 
+        WHERE id = ? AND user_id = ?
+    `, [req.params.id, req.session.userId], function(err) {
+        if (err) return res.status(500).json({ error: err.message });
+        if (this.changes === 0) return res.status(404).json({ error: "Record not found" });
+        
+        res.json({ success: true });
+    });
+});
+
+// SERVER INITIALIZATION
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Server running on port ${PORT}`);
 });
 
 app.listen(PORT, "0.0.0.0", () => {

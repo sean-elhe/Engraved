@@ -112,7 +112,7 @@ export async function apiDeleteChapter({ translation, book_id, chapter }) {
 
 export async function apiSaveScore(payload) {
     try {
-        const response = await fetch(`/api/save-score`, {
+        const response = await fetch(`/api/scores`, {
             method: `POST`,
             headers: {
                 'Content-Type': 'application/json',
@@ -130,3 +130,15 @@ export async function apiSaveScore(payload) {
         console.error(`Error saving score:`, error);
     }
 }
+
+export async function apiFetchSavedScores() {
+    const response = await fetch('/api/scores');
+    if (!response.ok) throw new Error(`Failed to fetch saved scores.`);
+    return await response.json();
+}
+
+export async function apiDeleteScore(scoreId) {
+    const response = await fetch(`/api/scores/${scoreId}`, { method: 'DELETE' });
+    return await response.json();
+}
+
