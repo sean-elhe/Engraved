@@ -455,74 +455,75 @@ export async function loadSavedScoresUI() {
         savedScoresContainer.innerHTML = "";
 
         if (!scores || scores.length === 0) {
-            savedScoresContainer.innerHTML = "<p>No saved scores</p>";
+            savedScoresContainer.innerHTML = "<p style='text-align:center; padding:16px; opacity:0.6;'>No saved scores</p>";
             return;
         }
 
         scores.forEach(session => {
+            // 1. Create a parent container matching .bookmark-row exactly
             const row = document.createElement("div");
-            row.className = "saved-score-row";
+            row.className = "bookmark-row score-history-row";
 
+            // 2. Create the internal info block using your layout styles
             const infoDiv = document.createElement("div");
-            infoDiv.className = "saved-score-info";
+            infoDiv.className = "score-label-block";
 
             const cleanDate = session.completed_at ? session.completed_at.slice(0, 10) : "";
 
             infoDiv.innerHTML = `
-                <div class="saved-score-top">
-                    <span class="saved-score-title">
-                        ${session.book} ${session.chapter}
-                    </span>
-                    <span class="saved-score-percent">
-                        ${Math.round(session.percentage)}%
-                    </span>
-                <div class="saved-score-meta">
-                        <span>${session.score} / ${session.total_questions} correct</span>
-                        <span>${session.translation} • ${session.difficulty}</span>
-                        <span class ="saved-score-date">${cleanDate}</span>
+                <div class="score-row-top">
+                    <span class="score-row-title">${session.book} ${session.chapter}</span>
+                    <span class="score-row-percent">${Math.round(session.percentage)}%</span>
                 </div>
-                <div class="mini-saved-progress">
-                        <div class="mini-history-progress-fill" style="width: ${session.percentage}%"></div>
+                <div class="score-row-meta">
+                    <span>${session.score} / ${session.total_questions} correct</span>
+                    <span>${session.translation} • ${session.difficulty}</span>
+                    <span class="score-row-date">${cleanDate}</span>
                 </div>
+                <div class="score-row-progress-bar">
+                    <div class="score-row-progress-fill" style="width: ${session.percentage}%"></div>
                 </div>
             `;
 
+            // 3. Create the dedicated delete "X" button matching .bookmark-delete-btn exactly
             const deleteBtn = document.createElement("button");
-            deleteBtn.className = "score-delete-btn";
+            deleteBtn.className = "bookmark-delete-btn";
             deleteBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
             deleteBtn.title = "Delete score";
 
-                    deleteBtn.addEventListener("click", async () => {
-                        event.stopPropagation();
+            deleteBtn.addEventListener("click", async (event) => {
+                event.stopPropagation();
 
-                        if (confirm(`Are you sure you want to delete this score for ${session.book} ${session.chapter}?`)) {
-                            try {
-                                const data = await apiDeleteScore(session.id);
+                if (confirm(`Are you sure you want to delete this score for ${session.book} ${session.chapter}?`)) {
+                    try {
+                        const data = await apiDeleteScore(session.id); 
 
-                                if (data.success) {
-                                    row.style.opacity = "0";
-                                    row.style.transform = "translateX(20px)";
-                                    setTimeout(() => {
-                                        row.remove();
-                                        if (savedScoresContainer.children.length === 0) {
-                                            savedScoresContainer.innerHTML = "<p>No saved scores found.</p>";
-                                        }
-                                    }, 200);
-                                } else {
-                                    alert(data.error || "Failed to delete score.");
+                        if (data.success) {
+                            // Match your slide animation logic
+                            row.style.opacity = "0";
+                            row.style.transform = "translateX(20px)";
+                            setTimeout(() => {
+                                row.remove();
+                                if (savedScoresContainer.children.length === 0) {
+                                    savedScoresContainer.innerHTML = "<p style='text-align:center; padding:16px; opacity:0.6;'>No saved scores found.</p>";
                                 }
-                            } catch (error) {
-                                console.error("Score deletion error:", error);
-                                alert("Something went wrong trying to delete this score. Check your console logs.");
-                            }
+                            }, 200);
+                        } else {
+                            alert(data.error || "Failed to delete score.");
                         }
-                    });
+                    } catch (error) {
+                        console.error("Score deletion error:", error);
+                        alert("Something went wrong trying to delete this score.");
+                    }
+                }
+            });
 
-                    row.appendChild(infoDiv);
-                    row.appendChild(deleteBtn);
-                    savedScoresContainer.appendChild(row);
-                });
-            } catch (error) {
-                console.error("Error loading saved scores:", error);
-            }
+            // 4. Assemble the row elements together
+            row.appendChild(infoDiv);
+            row.appendChild(deleteBtn);
+            savedScoresContainer.appendChild(row);
+        });
+    } catch (error) {
+        console.error("Error loading saved scores:", error);
+    }
 }

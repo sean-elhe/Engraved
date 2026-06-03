@@ -74,7 +74,7 @@
                   </div>
 
                   <div id="appSection" class="hidden">
-                      <button id="preferencesUI" class="dashboard-tab-btn">Preferences</button>
+                      <!-- <button id="preferencesUI" class="dashboard-tab-btn">Preferences</button> -->
                       <button id="savedUI" class="dashboard-tab-btn">Bookmarks</button>
                       <button id="scoresUI" class="dashboard-tab-btn">Scores</button>
                       <button id="logoutBtn" class="authBtn">Logout</button>
@@ -87,16 +87,14 @@
                   </div>
 
                   <div id="scoresScreen" class="hidden">
-                      <div class="panel-header">
-                          <h2><i class="fa-solid fa-clock-history"></i> Your Practice History</h2>
-                      </div>
+                      <div class="saved-chapters-section">
 
-                      <div class="panel-meta-summary">
-                          <p>Review your past performances and track your retention metrics.</p>
-                      </div>
-
-                      <div id="savedScoresContainerS" class="scores-scroll-container">
-                          <p class="loading-placeholder">Loading history logs...</p>
+                          <div id="savedScoresContainerS" class="saved-chapters-grid">
+                              <p class="loading-placeholder" style="text-align: center; opacity: 0.5; padding: 12px 0;">
+                                  Loading history logs...
+                              </p>
+                          </div>
+                          
                       </div>
                   </div>
 

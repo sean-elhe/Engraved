@@ -12,6 +12,17 @@
     box-sizing: border-box;
 }
 
+.saved-chapters-grid#savedScoresContainerS {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px 0;
+    max-height: 300px;
+    overflow-y: auto;
+    width: 100%;
+    box-sizing: border-box;
+}
+
 .bookmark-row {
     display: flex;
     align-items: stretch;
