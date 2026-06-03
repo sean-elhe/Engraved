@@ -1,7 +1,7 @@
 // This acts as your custom "buttons.js". All click configurations live here.
 import { state, resetScore } from './state.js';
 import { getBookId, getBookName, getChapter, clearInputs, showLoggedInUI, showLoggedOutUI } from './utils.js';
-import { loadBooks, loadChapters, loadChapter, displayCurrentVerse, calculateScore, displayVerseWords, showScoreScreen, handleNext, loadSavedChaptersUI,setupVerseOrder } from './render.js';
+import { loadBooks, loadChapters, loadChapter, displayCurrentVerse, calculateScore, displayVerseWords, showInfoScreen,showScoreScreen, handleNext, loadSavedChaptersUI,setupVerseOrder } from './render.js';
 import { apiLogin, apiSignup, apiLogout, apiSaveChapter } from './api.js';
 
 // --- Dom Element Targets ---
@@ -10,6 +10,7 @@ const signupBtn = document.getElementById("signupBtn");
 const logoutBtn = document.getElementById("logoutBtn");
 const saveBtn = document.getElementById("saveBtn");
 const savedUI = document.getElementById("savedUI");
+const infoScreen = document.getElementById("infoScreen");
 
 const closeSaved = document.getElementById("closeSaved");
 const savedScreen = document.getElementById("savedScreen");
@@ -75,26 +76,34 @@ export function setupInputLogic() {
     const inputs = document.querySelectorAll(".verseInput");
     const hintBtn = document.getElementById("hintBtn");
 
+    // Helper function to update the button based on the current state
+    function updateHintButton() {
+        const activeInput = state.selectedInput;
+        
+        if (!activeInput) {
+            hintBtn.textContent = "Need a hint? Tap a blank.";
+        } else {
+            hintBtn.textContent = "Click for a hint!";  // Text when selected but NOT blank
+        }
+    }
+
     inputs.forEach((input, index) => {
         input.setAttribute("enterkeyhint", "next");
 
         input.addEventListener("focus", () => {
             state.selectedInput = input;
-            hintBtn.classList.add("hidden");
-            clearTimeout(state.hintTimer);
-            state.hintTimer = setTimeout(() => {
-                if (state.selectedInput === input) {
-                    hintBtn.classList.remove("hidden");
-                }
-            }, 6000);
+            updateHintButton(); // Update text on focus
         });
 
         input.addEventListener("blur", () => {
-            clearTimeout(state.hintTimer);
-            state.hintTimer = null;
+            // Use setTimeout to ensure we don't clear state if focus is just moving to another input
             setTimeout(() => {
-                if (document.activeElement !== hintBtn) {
-                    hintBtn.classList.add("hidden");
+                if (document.activeElement !== input && !input.contains(document.activeElement)) {
+                    // Only clear if focus didn't just jump to another .verseInput
+                    if (!document.activeElement.classList.contains("verseInput")) {
+                        state.selectedInput = null;
+                        updateHintButton();
+                    }
                 }
             }, 0);
         });
@@ -108,6 +117,8 @@ export function setupInputLogic() {
         input.addEventListener("input", event => {
             event.target.value = event.target.value.toLowerCase().replace(/[^a-z]/g, "");
             event.target.style.width = `${Math.max(event.target.value.length + 2, 1)}ch`;
+            
+            updateHintButton(); // Update text in real-time as they type!
         });
     });
 }
@@ -221,12 +232,6 @@ export function initEventListeners() {
     });
 
     document.getElementById("hintBtn").addEventListener("click", () => {
-        if (state.tapTimer) {
-            clearTimeout(state.tapTimer);
-            state.tapTimer = null;
-            displayCurrentVerse();
-        } else {
-            state.tapTimer = setTimeout(() => {
                 state.hintCount++;
                 if (!state.selectedInput) return;
 
@@ -240,10 +245,8 @@ export function initEventListeners() {
                     state.selectedInput.setSelectionRange(newText.length, newText.length);
                     state.selectedInput.dispatchEvent(new Event("input"));
                 }
-                state.tapTimer = null;
-            }, 250);
-        }
-    });
+            });
+        
 
     document.getElementById("restartBtn").addEventListener("click", () => {
         document.getElementById("scoreScreen").classList.add("hidden");
@@ -251,6 +254,10 @@ export function initEventListeners() {
         state.verseOrderIndex = 0;
         resetScore();
         displayCurrentVerse();
+    });
+
+    document.getElementById("showInfoBtn").addEventListener("click", () => {
+        showInfoScreen();
     });
 
     // Score UI Breakdown Toggle

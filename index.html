@@ -103,7 +103,6 @@
 
     </div>
 
-    <button id="hintBtn" class="hintBtn hidden">HINT</button>
 
     <div class="main">
 
@@ -114,15 +113,30 @@
         </button>
 
         <div class="verse-card">
-          <p id="verseText"></p>
+            <button id="hintBtn" class="hintBtn">
+              <p id="hintTxt">
+                  Need a hint? Tap a blank.
+              </p>
+            </button>
+            <p id="verseText"></p>
+            <div class="info-text">
+                Tap the blanks to fill in the answers!
+            </div>
+
         </div>
 
         <button id="nextBtn" class="edge-btn right">
             <i class="fa-solid fa-chevron-right"></i>
         </button>  
-        
+
       </div>  
     </div>  
+
+    <div id="info">
+        <button id="showInfoBtn" class="icon-btn info-btn">
+            <i class="fa-solid fa-circle-info"></i>
+        </button>
+    </div>
 
   </main>
 
@@ -156,6 +170,27 @@
     </div>
 
     <button id="restartBtn" class="practice-btn">↻ Practice Again</button>
+    </div>
+  </main>
+
+  <main id="infoScreen" class="info-screen hidden">
+    <h1 class="info-title">How to Use Engraved</h1>
+
+    <div class="info-main">
+        <p>Engraved is a Bible memorization app designed to help you internalize Scripture through active recall and spaced repetition. Here's how to get started:</p>
+
+        <h3>1. Select Your Passage</h3>
+        <p>Tap the gear icon in the top left to open the settings menu. From there, you can choose the book, chapter, translation, and difficulty level you'd like to practice.</p>
+
+        <h3>2. Practice Your Memory</h3>
+        <p>Once you've selected your passage, you'll be presented with the first verse. Tap on the blanks to fill in the missing words. 
+          
+          There is a hint button if you need a little help! You first need to have a blank selected, after a few seconds the option for a hint will come up,</p>
+
+        <h3>3. Track Your Progress</h3>
+        <p>As you practice, Engraved will keep track of your progress and provide feedback on your performance. After completing a chapter, you'll receive a score and a breakdown of your results.</p>
+
+        <p>Happy memorizing!</p>
     </div>
   </main>
 
