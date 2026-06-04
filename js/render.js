@@ -481,8 +481,8 @@ export async function loadSavedScoresUI() {
                     <span class="score-row-percent">${Math.round(session.percentage)}%</span>
                 </div>
                 <div class="score-row-meta">
-                    <span>${session.score} / ${session.total_questions} correct</span>
-                    <span>${session.translation} • ${session.difficulty}</span>
+                    <span>${session.score} / ${session.total_questions}</span>
+                    <span> • ${session.translation} • ${session.difficulty}</span>
                     <span class="score-row-date">${cleanDate}</span>
                 </div>
                 <div class="score-row-progress-bar">
