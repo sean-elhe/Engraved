@@ -200,10 +200,58 @@
             </button>
         </div>
 
-        <div class="info-screen">
-            <p>How to use app</p>
-            <button class="authBtn" id="dismissInfoBtn">Got it!</button>
+<div class="info-screen">
+    
+    <!-- 1. Pinned Header/Intro (Stays at the top) -->
+    <div class="info-intro" style="background: rgba(0,0,0,0.03); padding: 12px; border-radius: 12px; width: 100%; box-sizing: border-box; border-left: 4px solid #3b82f6; margin-bottom: 4px;">
+        <p style="margin: 0; font-size: 0.88rem; line-height: 1.4; font-weight: 500; color: #111827;">
+            Welcome to <strong>Engraved</strong>! Select a book and chapter from settings, then tap the blanks to fill in the answers!
+        </p>
+    </div>
+
+    <!-- 2. NEW CRITICAL SCROLL CONTAINER LAYER -->
+    <div class="info-scroll-body">
+        
+        <!-- Section 1: Controls -->
+        <div class="info-section">
+            <h4><i class="fa-solid fa-gamepad"></i> Controls &amp; Gestures</h4>
+            <div class="control-item">
+                <strong><i class="fa-solid fa-chevron-right"></i> Forward Button (or Enter key):</strong>
+                <span>• <strong>Tap:</strong> Submits answers for the current verse.<br>• <strong>Long-Press:</strong> Submits the whole chapter instantly.</span>
+            </div>
+            <div class="control-item">
+                <strong><i class="fa-solid fa-chevron-left"></i> Back Button:</strong>
+                <span>• <strong>Tap:</strong> Resets text entered for the current verse.<br>• <strong>Long-Press:</strong> Restarts the chapter, you'll begin from the beginning with a fresh score.</span>
+            </div>
+            <div class="control-item">
+                <strong><i class="fa-solid fa-lightbulb"></i> Hint Function:</strong>
+                <span>Click a blank target word first to focus it, then tap the hint button to reveal a character.</span>
+            </div>
         </div>
+
+        <!-- Section 2: Profiles -->
+        <div class="info-section">
+            <h4><i class="fa-solid fa-user-shield"></i> Profile Storage</h4>
+            <ul>
+                <li><strong>User accounts:</strong> Create an account using a username and a simple 4-digit PIN (e.g., last 4 digits of your phone number).</li>
+                <li><strong>Bookmarks:</strong> Long-press the heart icon to bookmark the current chapter.</li>
+                <li><strong>Saved scores:</strong> Click the save button at the end of the score screen to save your current score.</li>
+            </ul>
+        </div>
+
+        <!-- Section 3: Logic Engine -->
+        <div class="info-section">
+            <h4><i class="fa-solid fa-sliders"></i> Mode Mechanics</h4>
+            <p><strong>Difficulty levels:</strong> Easy conceals 20% of words, Medium conceals 40%, and Hard conceals 60%. This excludes words under 3 characters, which are excluded from being hidden.</p>
+            <p><strong>Verse orders:</strong> <em>Sequential</em> loads verses in the natural order. <em>Randomized</em> shuffles all verses in the chapter,  while ensuring that every verse will be shown only once as well .</p>
+        </div>
+
+    </div> <!-- /END SCROLL CONTAINER -->
+
+    <!-- 3. Pinned Action Button (Stays locked at the bottom) -->
+    <button class="authBtn" id="dismissInfoBtn" style="margin-top: 4px; width: 100%;">Got it!</button>
+    
+</div>
 
     </div>
 </div>
