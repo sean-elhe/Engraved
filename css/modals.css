@@ -287,3 +287,68 @@
         transform: translateY(0);
     }
 }
+
+/* Copy this near your Section 5 / Section 6 Stylesheet area */
+.account-nav-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #111827;
+    border-radius: 12px;
+    padding: 14px 16px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 500;
+    color: #111827;
+    cursor: pointer;
+    box-sizing: border-box;
+    transition: all 0.15s ease;
+}
+
+.account-nav-item i:not(.style-arrow) {
+    margin-right: 8px;
+    color: #4b5563;
+    width: 16px;
+}
+
+.account-nav-item .style-arrow {
+    font-size: 0.8rem;
+    opacity: 0.4;
+    transition: transform 0.15s;
+}
+
+.account-nav-item:hover {
+    background-color: #f3f4f6;
+    border-color: #3b82f6;
+}
+
+.account-nav-item:hover .style-arrow {
+    opacity: 1;
+    transform: translateX(2px);
+}
+
+/* Make logout a clean, red-tinted alert action button */
+.account-logout-btn {
+    width: 100%;
+    background: transparent;
+    color: #dc2626;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    padding: 12px;
+    font-family: inherit;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: all 0.15s ease;
+}
+
+.account-logout-btn:hover {
+    background: #fee2e2;
+    border-color: #fca5a5;
+}

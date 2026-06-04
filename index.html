@@ -51,55 +51,75 @@
             <button id="openAuth" class="icon-btn logIn">
                     <i class="fa-solid fa-heart"></i>
                 </button>
-            <div id="authOverlay" class="modal-overlay hidden">
-                <div class="modal-content theme-light">
+<div id="authOverlay" class="modal-overlay hidden">
+    <div class="modal-content theme-light">
 
-                  <div class="menu-header">
-                    <h2 id="authTitle">Account</h2>
-                    <div class="header-controls">
-                      <button id="closeSaved" class="icon-btn hidden">
-                        <i class="fa-solid fa-arrow-left"></i>
-                      </button>
-                      <button id="closeAuth" class="icon-btn close-btn">
-                        <i class="fa-solid fa-xmark"></i>
-                      </button>
-                    </div>
-                  </div>
+        <!-- 1. Menu Header Section -->
+        <div class="menu-header">
+            <h2 id="authTitle">Account</h2>
+            <div class="header-controls">
+                <button id="closeSaved" class="icon-btn hidden">
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+                <button id="closeAuth" class="icon-btn close-btn">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+        </div>
 
-                  <div id="authSection" class="hidden">
-                      <input id="nameInput" placeholder="User">
-                      <input id="pinInput" type="password" placeholder="PIN">
-                      <button id="loginBtn" class="authBtn">Log into account</button>
-                      <button id="signupBtn" class="authBtn">Create account</button>
-                  </div>
+        <!-- 2. Auth Login Inputs Section -->
+        <div id="authSection" class="hidden">
+            <input id="nameInput" placeholder="User">
+            <input id="pinInput" type="password" placeholder="PIN">
+            <button id="loginBtn" class="authBtn">Log into account</button>
+            <button id="signupBtn" class="authBtn">Create account</button>
+        </div>
 
-                  <div id="appSection" class="hidden">
-                      <!-- <button id="preferencesUI" class="dashboard-tab-btn">Preferences</button> -->
-                      <button id="savedUI" class="dashboard-tab-btn">Bookmarks</button>
-                      <button id="scoresUI" class="dashboard-tab-btn">Scores</button>
-                      <button id="logoutBtn" class="authBtn">Logout</button>
-                  </div>
+        <!-- 3. Premium Dashboard Navigation Section -->
+        <div id="appSection" class="hidden" style="display: flex; flex-direction: column; gap: 10px; padding: 12px 4px 4px 4px; width: 100%; box-sizing: border-box;">
+            
+            <button id="savedUI" class="account-nav-item">
+                <span><i class="fa-solid fa-heart" style="color: #ef4444;"></i> Your Bookmarks</span>
+                <i class="fa-solid fa-chevron-right style-arrow"></i>
+            </button>
 
-                  <div id="savedScreen" class="hidden">
-                      <div class="saved-chapters-section">
-                          <div id="savedChaptersContainer" class="saved-chapters-grid"></div>
-                      </div>
-                  </div>
+            <button id="scoresUI" class="account-nav-item">
+                <span><i class="fa-solid fa-star" style="color: #ef4444;"></i> Your Scores</span>
+                <i class="fa-solid fa-chevron-right style-arrow"></i>
+            </button>
 
-                  <div id="scoresScreen" class="hidden">
-                      <div class="saved-chapters-section">
+            <hr style="border: none; border-top: 1px solid rgba(0,0,0,0.08); margin: 6px 0; width: 100%;">
 
-                          <div id="savedScoresContainerS" class="saved-chapters-grid">
-                              <p class="loading-placeholder" style="text-align: center; opacity: 0.5; padding: 12px 0;">
-                                  Loading history logs...
-                              </p>
-                          </div>
-                          
-                      </div>
-                  </div>
+            <button id="logoutBtn" class="account-logout-btn">
+                <i class="fa-solid fa-right-from-bracket"></i> Logout of Account
+            </button>
+            
+        </div>
 
+        <!-- ==========================================================================
+           4. RESTORED SUBVIEWS (Now nested safely inside the modal layout wrapper)
+           ========================================================================== -->
+        
+        <!-- Bookmarks Subview Panel -->
+        <div id="savedScreen" class="hidden" style="width: 100%; box-sizing: border-box;">
+            <div class="saved-chapters-section">
+                <div id="savedChaptersContainer" class="saved-chapters-grid"></div>
+            </div>
+        </div>
+
+        <!-- Scores History Subview Panel -->
+        <div id="scoresScreen" class="hidden" style="width: 100%; box-sizing: border-box;">
+            <div class="saved-chapters-section">
+                <div id="savedScoresContainerS" class="saved-chapters-grid">
+                    <p class="loading-placeholder" style="text-align: center; opacity: 0.5; padding: 12px 0; font-size: 0.9rem;">
+                        Loading history logs...
+                    </p>
                 </div>
-              </div>
+            </div>
+        </div>
+
+    </div>
+</div>
               
           </div> 
           

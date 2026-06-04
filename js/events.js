@@ -11,7 +11,7 @@ const logoutBtn = document.getElementById("logoutBtn");
 const saveBtn = document.getElementById("saveBtn");
 const savedUI = document.getElementById("savedUI");
 const infoScreen = document.getElementById("infoScreen");
-const scoreScreen = document.getElementById("scoreScreen");
+const scoresScreen = document.getElementById("scoresScreen");
 const scoresUI = document.getElementById("scoresUI");
 const closeScoreBtn = document.getElementById("closeScoreBtn");
 
@@ -268,8 +268,7 @@ export function initEventListeners() {
             total_questions: state.totalHiddenWords || 0,
             percentage: state.totalHiddenWords === 0 ? 0 : Math.round((state.correctCount / state.totalHiddenWords) * 100),
             translation: state.selectedTranslation || "Unknown",
-            book: state.book?.book || "Unknown",
-            chapter: state.currentChapter?.chapter || 0,
+            book: state.book?.book || (typeof getBookName === 'function' ? getBookName() : "Unknown"),              chapter: state.currentChapter?.chapter || 0,
             difficulty: document.getElementById("difficultySelect")?.value || "Normal",
             mode: state.mode || "standard"
         };
@@ -290,6 +289,20 @@ export function initEventListeners() {
     });
 
     document.getElementById("closeScoreBtn").addEventListener("click", () => {
+        const saveBtn = document.getElementById("restartBtn");
+    
+        if (saveBtn) {
+            // 2. Reset the layout styles back to your default CSS specs
+            saveBtn.style.backgroundColor = ""; 
+            saveBtn.style.color = "";
+            
+            // 3. Restore the original default text string content
+            saveBtn.innerHTML = "Save Score";
+            
+            // 4. Re-enable it if it was disabled during submission
+            saveBtn.disabled = false; 
+        }
+
         document.getElementById("scoreScreen").classList.add("hidden");
         document.getElementById("practiceScreen").classList.remove("hidden");
         state.verseOrderIndex = 0;
@@ -359,105 +372,107 @@ document.getElementById("infoModalOverlay").addEventListener("click", (event) =>
     const scoresUI = document.getElementById("scoresUI");
     const scoresScreen = document.getElementById("scoresScreen");
 
-// Clicking Bookmarks updates title, reveals the back arrow, and transitions sub-views
-    savedUI.addEventListener("click", () => {
-        appSection.classList.add("hidden");
-        savedScreen.classList.remove("hidden");
-        
-        authTitle.textContent = "Bookmarks";
-        
-        // --- THE FIX ---
-        closeSaved.classList.remove("hidden"); // Show the Back Arrow
-        closeAuth.classList.add("hidden");    // Hide the Close "X" button!
-        
-        loadSavedChaptersUI();
-    });
-
-    scoresUI.addEventListener("click", () => {
-        appSection.classList.add("hidden");
-        scoresScreen.classList.remove("hidden");
-
-        authTitle.textContent = "Scores";
-
-        closeSaved.classList.remove("hidden"); // Show the Back Arrow
-        closeAuth.classList.add("hidden");    // Hide the Close "X" button!
-
-        loadSavedScoresUI();
-    });
-
-// Clicking the Back arrow restores the root panel states seamlessly
-// Clicking the Back Arrow
-    closeSaved.addEventListener("click", () => {
-        savedScreen.classList.add("hidden");
-        scoresScreen.classList.add("hidden");
-        appSection.classList.remove("hidden");
-        
-        authTitle.textContent = "Account!";
-        
-        // --- THE FIX ---
-        closeSaved.classList.add("hidden");     // Hide the Back Arrow
-        closeAuth.classList.remove("hidden");  // Show the Close "X" button again!
-    });
-
-    openSettings.addEventListener("click", () => settingsOverlay.classList.remove("hidden"));
-
-    let isAuthLongPress = false;
-
-    addLongClickListener(openAuth, async (event) => {
-        isAuthLongPress = true;
-        console.log("Long press on authBtn: Saving.")
-
-        const bookId = getBookId();
-        const chapter = getChapter();
-
-        if (!bookId || Number.isNaN(bookId)) {
-            alert("Please select a book first.");
-            return;
-        }
-        if (!chapter) return;
-
-        const data = await apiSaveChapter({
-            translation: state.selectedTranslation,
-            book_id: bookId,
-            book: getBookName(),
-            chapter: chapter
-        });
-
-        if (data.success) {
-            alert("Chapter saved!");
-        } else {
-            alert(data.error);
-        }
-
-    }, 800);
-
-    openAuth.addEventListener("click", () => {
-            if (isAuthLongPress) {
-                isAuthLongPress = false;
-            return;
-        }
-        console.log("Standard quick tap: Show menu.");
-            authOverlay.classList.remove("hidden");
-    });
-
+    // Clicking Bookmarks updates title, reveals the back arrow, and transitions sub-views
+savedUI.addEventListener("click", () => {
+    appSection.classList.add("hidden");
+    savedScreen.classList.remove("hidden");
     
-    closeSettings.addEventListener("click", () => settingsOverlay.classList.add("hidden"));
-
-    closeAuth.addEventListener("click", () => {
-        authOverlay.classList.add("hidden");
-        savedScreen.classList.add("hidden");
-        appSection.classList.remove("hidden");
-        
-        // Clean string normalization
-        authTitle.textContent = "Account!";
-        closeSaved.classList.add("hidden");
-    });
-
-    settingsOverlay.addEventListener("click", e => {
-        if (e.target === settingsOverlay) settingsOverlay.classList.add("hidden");
-    });
+    authTitle.textContent = "Bookmarks"; // Restored clean normalization
     
-    authOverlay.addEventListener("click", e => {
-        if (e.target === authOverlay) authOverlay.classList.add("hidden");
+    closeSaved.classList.remove("hidden"); // Show the Back Arrow
+    closeAuth.classList.add("hidden");    // Hide the Close "X" button!
+    
+    loadSavedChaptersUI();
+});
+
+scoresUI.addEventListener("click", () => {
+    appSection.classList.add("hidden");
+    // Ensure scoresScreen variable points to document.getElementById("scoresScreen")
+    scoresScreen.classList.remove("hidden"); 
+
+    authTitle.textContent = "Scores"; // Clean structural title string
+
+    closeSaved.classList.remove("hidden"); // Show the Back Arrow
+    closeAuth.classList.add("hidden");    // Hide the Close "X" button!
+
+    loadSavedScoresUI();
+});
+
+// Clicking the Back Arrow restores the root panel states seamlessly
+closeSaved.addEventListener("click", () => {
+    savedScreen.classList.add("hidden");
+    scoresScreen.classList.add("hidden");
+    appSection.classList.remove("hidden");
+    
+    authTitle.textContent = "Account"; // Removed trailing punctuation mark
+    
+    closeSaved.classList.add("hidden");     // Hide the Back Arrow
+    closeAuth.classList.remove("hidden");  // Show the Close "X" button again!
+});
+
+openSettings.addEventListener("click", () => settingsOverlay.classList.remove("hidden"));
+
+let isAuthLongPress = false;
+
+addLongClickListener(openAuth, async (event) => {
+    isAuthLongPress = true;
+    console.log("Long press on authBtn: Saving.");
+
+    const bookId = getBookId();
+    const chapter = getChapter();
+
+    if (!bookId || Number.isNaN(bookId)) {
+        alert("Please select a book first.");
+        return;
+    }
+    if (!chapter) return;
+
+    const data = await apiSaveChapter({
+        translation: state.selectedTranslation,
+        book_id: bookId,
+        book: getBookName(),
+        chapter: chapter
     });
+
+    if (data.success) {
+        alert("Chapter saved!");
+    } else {
+        alert(data.error);
+    }
+}, 800);
+
+openAuth.addEventListener("click", () => {
+    if (isAuthLongPress) {
+        isAuthLongPress = false;
+        return;
+    }
+    console.log("Standard quick tap: Show menu.");
+    authOverlay.classList.remove("hidden");
+});
+
+closeSettings.addEventListener("click", () => settingsOverlay.classList.add("hidden"));
+
+// Central function to cleanly wipe and reset dashboard sub-view states
+function resetAuthModalState() {
+    authOverlay.classList.add("hidden");
+    savedScreen.classList.add("hidden");
+    scoresScreen.classList.add("hidden"); // Ensure history hides too!
+    appSection.classList.remove("hidden");
+    
+    authTitle.textContent = "Account"; 
+    closeSaved.classList.add("hidden");
+    closeAuth.classList.remove("hidden"); // Make sure 'X' is restored as primary
+}
+
+closeAuth.addEventListener("click", resetAuthModalState);
+
+settingsOverlay.addEventListener("click", e => {
+    if (e.target === settingsOverlay) settingsOverlay.classList.add("hidden");
+});
+
+authOverlay.addEventListener("click", e => {
+    // FIX: Instead of just adding hidden, run the reset state function 
+    // so things don't stay broken when re-opening later!
+    if (e.target === authOverlay) resetAuthModalState();
+});
 }

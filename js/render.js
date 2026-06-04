@@ -305,11 +305,11 @@ export function showScoreScreen() {
     if (document.getElementById("hints")) document.getElementById("hints").textContent = state.hintCount;
 
     // 5. Reset the save button state so it's fresh for this new session
-    const saveBtn = document.getElementById("saveScoreBtn");
+    const saveBtn = document.getElementById("restartBtn");
     if (saveBtn) {
         saveBtn.disabled = false;
-        saveBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Save to Profile`;
-        saveBtn.style.backgroundColor = ""; // Resets back to your default CSS button styles
+        saveBtn.innerHTML = "Save Score";
+        saveBtn.style.backgroundColor = ""; 
         saveBtn.style.color = "";
     }
 
