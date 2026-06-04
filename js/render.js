@@ -266,74 +266,79 @@ export function showInfoScreen() {
 }
 
 export function showScoreScreen() {
-    // 1. Existing UI transitions
+    // 1. Switch screens safely
     document.getElementById("practiceScreen").classList.add("hidden");
     document.getElementById("scoreScreen").classList.remove("hidden");
 
-    // 2. Existing calculations
+    // 2. Perform stats calculations from the global state
     const chapterTotalTime = state.verseScores.reduce((sum, score) => sum + score.time, 0);
     const percent = state.totalHiddenWords === 0 ? 0 : Math.round((state.correctCount / state.totalHiddenWords) * 100);
 
-    // ==========================================
-    // NEW: Prepare data for your SQL Table
-    // ==========================================
-    const scorePayload = {
-        score: state.correctCount, // Maps to "score"
-        total_questions: state.totalHiddenWords, // Maps to "total_questions"
-        percentage: percent, // Maps to "percentage"
-        translation: state.selectedTranslation, // Maps to "translation"
-        book: state.book?.book || getBookName(), // Maps to "book"
-        chapter: state.currentChapter.chapter, // Maps to "chapter"
-        difficulty: document.getElementById("difficultySelect").value, // Maps to "difficulty"
-        mode: state.mode || "standard" // Maps to "mode" (e.g., timed, practice, etc.)
-    };
+    // Safeguards for variables to prevent runtime crashes
+    const dynamicBookName = state.book?.book || (typeof getBookName === 'function' ? getBookName() : "Unknown");
+    const dynamicChapter = state.currentChapter?.chapter || 0;
+    const selectedDifficulty = document.getElementById("difficultySelect")?.value || "Normal";
 
-    // Trigger the database save
-    apiSaveScore(scorePayload);
-    // ==========================================
-
-    // 3. Your existing UI rendering code (unchanged)
-    chapterScore.innerHTML += `
-    <div class="chapter-score">
-        <div class="chapter-score-top">
-            <span class="chapter-score-title">${scorePayload.book} ${scorePayload.chapter}</span>
-            <span class="chapter-score-percent">${percent}%</span>
-        </div>
-        <div class="chapter-score-meta">
-            <span>${scorePayload.score} / ${scorePayload.total_questions}</span>
-            <span>${formatTime(chapterTotalTime)}</span>
-        </div>
-        <div class="big-progress">
-            <div class="big-progress-fill" style="width: ${percent}%"></div>
-        </div>
-    </div>
-    `;
-
-    document.getElementById("translation").textContent = scorePayload.translation;
-    document.getElementById("difficulty").textContent = scorePayload.difficulty;
-    document.getElementById("hints").textContent = state.hintCount;
-
-    const verseScoreList = document.getElementById("verseScoreList");
-    verseScoreList.innerHTML = "";
-
-    state.verseScores.forEach(score => {
-        const versePercent = score.total === 0 ? 0 : Math.round((score.correct / score.total) * 100);
-        verseScoreList.innerHTML += `
-          <div class="verse-score">
-            <div class="verse-score-top">
-              <span class="verse-score-title">${state.currentChapter.chapter}:${score.verse}</span>
-              <span class="verse-score-percent">${versePercent}%</span>
+    // 3. Render the main Chapter Summary Card UI
+    const chapterScore = document.getElementById("chapterScore"); // Ensure this element is fetched safely
+    if (chapterScore) {
+        chapterScore.innerHTML = `
+        <div class="chapter-score">
+            <div class="chapter-score-top">
+                <span class="chapter-score-title">${dynamicBookName} ${dynamicChapter}</span>
+                <span class="chapter-score-percent">${percent}%</span>
             </div>
-            <div class="verse-score-meta">
-              <span>${score.correct} / ${score.total}</span>
-              <span>${formatTime(score.time)}</span>
+            <div class="chapter-score-meta">
+                <span>${state.correctCount} / ${state.totalHiddenWords}</span>
+                <span>${formatTime(chapterTotalTime)}</span>
             </div>
-            <div class="mini-progress">
-              <div class="mini-progress-fill" style="width: ${versePercent}%"></div>
+            <div class="big-progress">
+                <div class="big-progress-fill" style="width: ${percent}%"></div>
             </div>
-          </div>
+        </div>
         `;
-    });
+    }
+
+    // 4. Fill in the session metadata fields
+    if (document.getElementById("translation")) document.getElementById("translation").textContent = state.selectedTranslation;
+    if (document.getElementById("difficulty")) document.getElementById("difficulty").textContent = selectedDifficulty;
+    if (document.getElementById("hints")) document.getElementById("hints").textContent = state.hintCount;
+
+    // 5. Reset the save button state so it's fresh for this new session
+    const saveBtn = document.getElementById("saveScoreBtn");
+    if (saveBtn) {
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = `<i class="fa-solid fa-cloud-arrow-up"></i> Save to Profile`;
+        saveBtn.style.backgroundColor = ""; // Resets back to your default CSS button styles
+        saveBtn.style.color = "";
+    }
+
+    // 6. Render the individual Verse Breakdowns list
+    const verseScoreList = document.getElementById("verseScoreList");
+    if (verseScoreList) {
+        verseScoreList.innerHTML = "";
+
+        if (Array.isArray(state.verseScores)) {
+            state.verseScores.forEach(score => {
+                const versePercent = score.total === 0 ? 0 : Math.round((score.correct / score.total) * 100);
+                verseScoreList.innerHTML += `
+                  <div class="verse-score">
+                    <div class="verse-score-top">
+                      <span class="verse-score-title">${dynamicChapter}:${score.verse}</span>
+                      <span class="verse-score-percent">${versePercent}%</span>
+                    </div>
+                    <div class="verse-score-meta">
+                      <span>${score.correct} / ${score.total}</span>
+                      <span>${formatTime(score.time)}</span>
+                    </div>
+                    <div class="mini-progress">
+                      <div class="mini-progress-fill" style="width: ${versePercent}%"></div>
+                    </div>
+                  </div>
+                `;
+            });
+        }
+    }
 }
 
 export function handleNext() {

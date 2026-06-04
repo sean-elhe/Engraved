@@ -9,6 +9,35 @@
     box-sizing: border-box;
 }
 
+.score-header {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    width: 100%;
+    padding: 8px;
+    box-sizing: border-box;
+    border-bottom: 1px solid  rgba(0, 0, 0, 0.08);
+}
+
+.score-header h2 {
+    font-size: 22px;
+}
+
+.score-header .close-btn {
+    grid-column: 3;
+    justify-self: end;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: #4b5563;
+    cursor: pointer;
+    padding: 4px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s;
+}
+
 #scoreHeader {
     text-align: center;
     font-family: Georgia, "Times New Roman", serif;
@@ -71,14 +100,9 @@
     padding-bottom: 18px;
 }
 
-.chapter-title, 
 .verses-title {
     font-size: 20px;
     margin: 0 0 14px;
-}
-
-.chapter-title {
-    margin-top: 40px;
 }
 
 .chapterScore {

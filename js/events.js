@@ -2,7 +2,7 @@
 import { state, resetScore } from './state.js';
 import { getBookId, getBookName, getChapter, clearInputs, showLoggedInUI, showLoggedOutUI } from './utils.js';
 import { loadBooks, loadChapters, loadChapter, displayCurrentVerse, calculateScore, displayVerseWords, showInfoScreen,showScoreScreen, handleNext, loadSavedChaptersUI,setupVerseOrder, loadSavedScoresUI } from './render.js';
-import { apiLogin, apiSignup, apiLogout, apiSaveChapter } from './api.js';
+import { apiLogin, apiSignup, apiLogout, apiSaveChapter, apiSaveScore } from './api.js';
 
 // --- Dom Element Targets ---
 const loginBtn = document.getElementById("loginBtn");
@@ -13,6 +13,7 @@ const savedUI = document.getElementById("savedUI");
 const infoScreen = document.getElementById("infoScreen");
 const scoreScreen = document.getElementById("scoreScreen");
 const scoresUI = document.getElementById("scoresUI");
+const closeScoreBtn = document.getElementById("closeScoreBtn");
 
 const closeSaved = document.getElementById("closeSaved");
 const savedScreen = document.getElementById("savedScreen");
@@ -250,7 +251,45 @@ export function initEventListeners() {
             });
         
 
-    document.getElementById("restartBtn").addEventListener("click", () => {
+    document.getElementById("restartBtn").addEventListener("click", async (event) => {
+        const btn = event.currentTarget;
+        
+        // Prevent double submissions if they click rapidly
+        if (btn.disabled) return; 
+
+        // 1. Change UI to show it's working
+        btn.disabled = true;
+        const originalText = btn.innerHTML;
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Saving...`;
+
+        // 2. Gather current session info out of your global state object
+        const scorePayload = {
+            score: state.correctCount || 0,
+            total_questions: state.totalHiddenWords || 0,
+            percentage: state.totalHiddenWords === 0 ? 0 : Math.round((state.correctCount / state.totalHiddenWords) * 100),
+            translation: state.selectedTranslation || "Unknown",
+            book: state.book?.book || "Unknown",
+            chapter: state.currentChapter?.chapter || 0,
+            difficulty: document.getElementById("difficultySelect")?.value || "Normal",
+            mode: state.mode || "standard"
+        };
+
+        try {
+            // 3. Fire the API request
+            await apiSaveScore(scorePayload);
+            
+            // 4. Update button to a success state
+            btn.innerHTML = `<i class="fa-solid fa-check"></i> Saved Successfully!`;
+            btn.style.backgroundColor = "#10b981"; // Success green
+            btn.style.color = "#ffffff";
+        } catch (error) {
+            console.error("Click handler save failed:", error);
+            btn.disabled = false;
+            btn.innerHTML = `<i class="fa-solid fa-circle-exclamation"></i> Try Again`;
+        }    
+    });
+
+    document.getElementById("closeScoreBtn").addEventListener("click", () => {
         document.getElementById("scoreScreen").classList.add("hidden");
         document.getElementById("practiceScreen").classList.remove("hidden");
         state.verseOrderIndex = 0;

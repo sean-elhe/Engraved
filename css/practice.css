@@ -111,6 +111,39 @@ select {
 /* ==========================================================================
    4. INTERACTIVE VERSE PRACTICING MODULE
    ========================================================================== */
+
+.main {
+    position: relative;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+
+    padding-top: 24px;
+}
+
+/* 2. Pin the info wrapper to the bottom right corner */
+#info {
+    position: absolute;
+    bottom: 16px;  /* Distance from the bottom edge of .main */
+    right: 16px;   /* Distance from the right edge of .main */
+    z-index: 10;   /* Keeps it layered on top of other content if they overlap */
+}
+
+/* 3. Optional: Style your icon button to make it look clean */
+.info-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-size: 1.5rem; /* Adjust icon size to taste */
+    color: #4b5563;    /* Match your theme's muted text color */
+    transition: color 0.2s, transform 0.2s;
+}
+
+.info-btn:hover {
+    color: #111827;    /* Darkens on hover */
+    transform: scale(1.05);
+}
+
 .verse-wrapper {
     position: relative;
     width: 100%;
@@ -274,42 +307,11 @@ select {
     transition: width 0.35s ease;
 }
 
-/* .progress-fill::after {
-    content: "";
-    position: absolute;
-    right: 0;
-    top: 50%;
-    width: 12px;
-    height: 12px;
-    transform: translate(50%, -50%);
-    border-radius: 50%;
-    background: #D9B06A;
-    box-shadow:
-        0 0 0 3px rgba(217,176,106,0.15);
-} */
-
 .info-text {
     font-size: 12px;
     margin-top: 24px;
     text-align: center;
     color: #72695F;
-}
-
-#info {
-    display: flex;
-    justify-content: center;
-    margin-top: 12px;
-}
-
-#showInfoBtn {
-    display: flex;
-    padding: 8px 14px;
-    border-radius: 999px;
-    background:
-        whitesmoke; 
-    border:
-      1px solid rgba(201,170,120,0.18);
-    width: 350px;
 }
 
 

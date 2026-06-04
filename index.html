@@ -140,20 +140,24 @@
         <button id="nextBtn" class="edge-btn right">
             <i class="fa-solid fa-chevron-right"></i>
         </button>  
-
       </div>  
-    </div>  
 
-    <div id="info">
-        <button id="showInfoBtn" class="icon-btn info-btn">
-            <i class="fa-solid fa-circle-info"></i>
-        </button>
-    </div>
+                    <div id="info">
+                <button id="showInfoBtn" class="icon-btn info-btn">
+                    <i class="fa-solid fa-circle-info"></i>
+                </button>
+            </div>
+
+    </div>  
 
   </main>
 
   <main id="scoreScreen" class="score-screen hidden">
-    <h2 class="chapter-title">Chapter Score</h2>
+    <div class="score-header">
+      <h2 class="chapter-title">Chapter Score</h2>
+      <button id="closeScoreBtn" class="icon-btn close-btn">
+        <i class="fa-solid fa-xmark"></i>
+    </div>
 
     <div class="score-main">
         <div id="chapterScore"></div>
@@ -181,7 +185,7 @@
       <div id="verseScoreList" class="verse-score-list hidden-dropdown"></div>
     </div>
 
-    <button id="restartBtn" class="practice-btn">↻ Practice Again</button>
+    <button id="restartBtn" class="practice-btn">Save Score</button>
     </div>
   </main>
 

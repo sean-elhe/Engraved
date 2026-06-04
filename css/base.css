@@ -71,14 +71,6 @@ body {
     margin-bottom: 12px;
 }
 
-.main {
-    flex: 1;
-    display: flex;
-    justify-content: flex-start;
-
-    padding-top: 24px;
-}
-
 #progressCurrent {
     font-size: var(--text-sm);
     font-weight: 500;
