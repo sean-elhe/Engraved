@@ -189,7 +189,26 @@
     </div>
   </main>
 
-  <main id="infoScreen" class="info-screen hidden">
+  <div id="infoModalOverlay" class="modal-overlay hidden">
+    
+    <div class="modal-content theme-sand">
+        
+        <div class="menu-header">
+            <h2>Information</h2>
+            <button id="closeInfoBtn" class="close-btn">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+
+        <div class="info-screen">
+            <p>How to use app</p>
+            <button class="authBtn" id="dismissInfoBtn">Got it!</button>
+        </div>
+
+    </div>
+</div>
+
+  <!-- <main id="infoScreen" class="info-screen hidden">
     <h1 class="info-title">How to Use Engraved</h1>
 
     <div class="info-main">
@@ -208,7 +227,7 @@
 
         <p>Happy memorizing!</p>
     </div>
-  </main>
+  </main> -->
 
   <script type="module" src="js/main.js"></script>
 </body>

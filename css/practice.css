@@ -337,11 +337,21 @@ select {
         touch-action: manipulation;
 }
 
+/* Update your existing class to adapt to inside the modal box */
 .info-screen {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    padding: 24px;
+    padding: 16px 8px;
     gap: 18px;
+    width: 100%;
+    box-sizing: border-box;
+    color: #111827; /* Dark text to read clearly on sand/light backgrounds */
+    text-align: center;
+}
+
+/* Helper rule to easily hide and show your pop-up dynamically */
+.modal-overlay.hidden {
+    display: none !important;
 }

@@ -297,9 +297,27 @@ export function initEventListeners() {
         displayCurrentVerse();
     });
 
-    document.getElementById("showInfoBtn").addEventListener("click", () => {
-        showInfoScreen();
-    });
+// 1. Open the Info Popup when clicking the info icon button
+document.getElementById("showInfoBtn").addEventListener("click", () => {
+    document.getElementById("infoModalOverlay").classList.remove("hidden");
+});
+
+// 2. Close the Info Popup when clicking the top "X" button
+document.getElementById("closeInfoBtn").addEventListener("click", () => {
+    document.getElementById("infoModalOverlay").classList.add("hidden");
+});
+
+// 3. Close the Info Popup when clicking the "Got it!" action button
+document.getElementById("dismissInfoBtn").addEventListener("click", () => {
+    document.getElementById("infoModalOverlay").classList.add("hidden");
+});
+
+// 4. Optional: Close the Popup if they click on the dark background overlay space directly
+document.getElementById("infoModalOverlay").addEventListener("click", (event) => {
+    if (event.target === event.currentTarget) {
+        event.currentTarget.classList.add("hidden");
+    }
+});
 
     // Score UI Breakdown Toggle
     document.getElementById("breakdownToggle").addEventListener("click", () => {
