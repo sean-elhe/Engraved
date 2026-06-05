@@ -253,21 +253,49 @@ export function initEventListeners() {
     });
 
     document.getElementById("hintBtn").addEventListener("click", () => {
-                state.hintCount++;
-                if (!state.selectedInput) return;
+        state.hintCount++;
+        if (!state.selectedInput) return;
 
-                const answer = state.selectedInput.dataset.answer.toLowerCase().replace(/[^a-z]/g, "");
-                const current = state.selectedInput.value.toLowerCase().replace(/[^a-z]/g, "");
+        const input = state.selectedInput;
+        const answer = input.dataset.answer.toLowerCase().replace(/[^a-z]/g, "");
+        const current = input.value.toLowerCase().replace(/[^a-z]/g, "");
 
-                if (current.length < answer.length) {
-                    const newText = answer.slice(0, current.length + 1);
-                    state.selectedInput.value = newText;
-                    state.selectedInput.focus();
-                    state.selectedInput.setSelectionRange(newText.length, newText.length);
-                    state.selectedInput.dispatchEvent(new Event("input"));
-                }
-            });
+        // 1. Find the first mismatch
+        let firstMismatchIndex = -1;
+        for (let i = 0; i < current.length; i++) {
+            if (current[i] !== answer[i]) {
+                firstMismatchIndex = i;
+                break;
+            }
+        }
+
+        // 2. Determine the new value
+        let newVal = "";
+        if (firstMismatchIndex !== -1) {
+            // Correcting an error: stop at the mismatch and insert the correct character
+            newVal = answer.slice(0, firstMismatchIndex + 1);
+        } else if (current.length < answer.length) {
+            // No errors: append the next character
+            newVal = answer.slice(0, current.length + 1);
+        } else {
+            // Word is already complete
+            return;
+        }
+
+        // 3. Apply the new value and visual feedback
+        input.value = newVal;
         
+        // Trigger the animation class (defined in your CSS)
+        input.classList.add("hint-highlight");
+        setTimeout(() => {
+            input.classList.remove("hint-highlight");
+        }, 300);
+
+        // 4. Update state and UI
+        input.focus();
+        input.setSelectionRange(input.value.length, input.value.length);
+        input.dispatchEvent(new Event("input"));
+    });
 
     document.getElementById("restartBtn").addEventListener("click", async (event) => {
         const btn = event.currentTarget;

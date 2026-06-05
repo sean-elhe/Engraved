@@ -193,11 +193,12 @@ select {
     width: 1ch;
     min-width: 6ch;
     height: 38px;
-        border: 
-            2px dashed rgba(201,170,120,0.45);
-        background:
-            rgba(255,255,255,0.55);
-        transition: all 0.2s ease;    border-radius: 16px;
+    border: 
+        2px dashed rgba(201,170,120,0.45);
+    background:
+        rgba(255,255,255,0.55);
+    transition: all 0.3s ease;
+    border-radius: 16px;
     padding: 2px;
     background: #fbf8f1;
     color: #222820;
@@ -209,8 +210,6 @@ select {
     outline: none;
     box-shadow: 0 8px 20px rgba(70, 55, 35, 0.08);
 }
-
-
 
 .verseInput:focus {
     border-color: #7f875a;
@@ -243,6 +242,12 @@ select {
     margin-bottom: 24px;
     text-align: center;
     transition: all 0.2s ease;
+}
+
+.hint-highlight {
+    background-color: #fffde7; /* Soft yellow flash */
+    color: #c5a059;           /* The gold color we discussed */
+    border-color: #c5a059;
 }
 
 .edge-btn {
