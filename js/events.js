@@ -32,6 +32,24 @@ const openAuth = document.getElementById("openAuth");
 const closeAuth = document.getElementById("closeAuth");
 const authOverlay = document.getElementById("authOverlay");
 
+// Add this bridge listener
+const chapterSelect = document.getElementById("chapterSelect");
+if (chapterSelect) {
+    chapterSelect.addEventListener("change", async (event) => {
+        // 1. Sync the dropdown selection to state
+        state.currentChapter = {
+            chapter: parseInt(event.target.value),
+            verses: []
+        };
+        
+        // 2. Persist the change
+        localStorage.setItem("selectedChapter", event.target.value);
+        
+        // 3. Trigger the load
+        await loadChapter();
+    });
+}
+
 /**
  * Adds a long-click event listener to a DOM element.
  * @param {HTMLElement} element - The target button.

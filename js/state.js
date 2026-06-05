@@ -1,7 +1,7 @@
 // Holds the live application state and simple data-mutators
 export const state = {
-    book: null,
-    currentChapter: null,
+    book: {book: "Psalm" },
+    currentChapter: { chapter: 23, verses: [] },
     stage: 1,
     verseMode: "ordered",
     verseOrder: [],

@@ -60,13 +60,18 @@ export async function loadBooks() {
 }
 
 export async function loadChapters(fallbackBookName) {
+    // 1. Determine book name from argument or DOM, then SYNC TO STATE
     const bookName = fallbackBookName || getBookName();
     
     if (!bookName) {
-        console.warn("loadChapters aborted: No book name available yet.");
+        console.warn("loadChapters aborted: No book name available.");
         return;
     }
+    
+    // Crucial: Update global state before API call
+    state.book = { book: bookName };
 
+    // 2. Fetch data
     const chapters = await apiFetchChapters(state.selectedTranslation, bookName);
     const chapterSelect = document.getElementById("chapterSelect");
     
@@ -75,11 +80,12 @@ export async function loadChapters(fallbackBookName) {
         return;
     }
 
+    // 3. Update UI
     chapterSelect.innerHTML = chapters.map(chapter => `
         <option value="${chapter}">${chapter}</option>
     `).join('');
     
-    // PERSISTENCE: Check if they have a saved chapter
+    // Persistence sync
     const savedChapter = localStorage.getItem("selectedChapter");
     const savedChapterExists = chapters.some(c => c == savedChapter);
 
@@ -90,10 +96,48 @@ export async function loadChapters(fallbackBookName) {
         localStorage.setItem("selectedChapter", chapterSelect.value);
     }
 
-    console.log("Chapters loaded into DOM");
+    // 4. Update state with selected chapter and trigger final load
+    state.currentChapter = {
+        chapter: parseInt(chapterSelect.value),
+        verses: []
+    };
 
-    // CASCADE: Pass selected parameters down to load the final text
-    await loadChapter(bookName, chapterSelect.value);
+    console.log("State synchronized in loadChapters. Fetching verses...");
+    await loadChapter();
+}
+
+export async function loadChapter(fallbackBookName, fallbackChapterNum) {
+    // 1. PRIORITIZE STATE: Check state first, fallback to DOM if state is null
+    const bookName = state.book?.book || fallbackBookName || getBookName();
+    const chapterNum = state.currentChapter?.chapter || fallbackChapterNum || getChapter();
+
+    console.log("loadChapter executing with:", { bookName, chapterNum });
+
+    if (!bookName || !chapterNum) {
+        console.warn("Aborting loadChapter: Book or Chapter undefined.");
+        return;
+    }
+
+    // 2. API Fetch
+    const verses = await apiFetchChapter(state.selectedTranslation, bookName, chapterNum);
+
+    if (!Array.isArray(verses) || verses.length === 0) {
+        console.error("No verses found for:", bookName, chapterNum);
+        return;
+    }
+
+    // 3. Update state with the newly fetched verses
+    state.currentChapter = {
+        chapter: chapterNum,
+        verses: verses
+    };
+    
+    // 4. Update UI/Logic
+    setupVerseOrder();
+    resetScore();
+    displayCurrentVerse();
+    
+    console.log("Chapter loaded successfully.");
 }
 
 export function setupVerseOrder() {
@@ -121,33 +165,6 @@ export function setupVerseOrder() {
     if (modeSelect) {
         modeSelect.value = state.verseMode;
     }
-}
-
-export async function loadChapter(fallbackBookName, fallbackChapterNum) {
-    // Use passed parameters if available (on startup), or read the DOM (on user select)
-    const bookName = fallbackBookName || getBookName();
-    const chapterNum = fallbackChapterNum || getChapter();
-
-    if (!bookName || !chapterNum) {
-        console.warn(`Aborting loadChapter: Book (${bookName}) or Chapter (${chapterNum}) dropdown is not ready yet.`);
-        return;
-    }
-
-    const verses = await apiFetchChapter(state.selectedTranslation, bookName, chapterNum);
-
-    if (!Array.isArray(verses) || verses.length === 0) {
-        console.error("No verses found for:", bookName, chapterNum);
-        return;
-    }
-
-    state.currentChapter = {
-        chapter: chapterNum,
-        verses: verses
-    };
-
-    setupVerseOrder();
-    resetScore();
-    displayCurrentVerse();
 }
 
 export async function checkLogIn() {
@@ -362,93 +379,106 @@ export function handleNext() {
 
 export async function loadSavedChaptersUI() {
     const chapters = await apiFetchSavedChapters();
-    const savedChaptersContainer = document.getElementById("savedChaptersContainer");    console.log(chapters);
+    const savedChaptersContainer = document.getElementById("savedChaptersContainer");
 
+    if (!savedChaptersContainer) return;
+
+    // 1. Clear current list
     savedChaptersContainer.innerHTML = "";
 
-    if (chapters.length === 0) {
-        savedChaptersContainer.innerHTML = "<p>No saved chapters</p>";
+    // 2. Handle empty state
+    if (!chapters || chapters.length === 0) {
+        savedChaptersContainer.innerHTML = "<p style='text-align:center; padding:16px; opacity:0.6;'>No saved chapters</p>";
         return;
     }
 
- // Inside loadSavedChaptersUI() in render.js
-chapters.forEach(chapter => {
-    // 1. Create a parent row container
-    const row = document.createElement("div");
-    row.className = "bookmark-row";
-
-    // 2. Create the main text label area (clicking this loads the chapter)
-    const labelBtn = document.createElement("button");
-    labelBtn.className = "bookmark-label-btn";
-    labelBtn.textContent = `${chapter.book} ${chapter.chapter} (${chapter.translation})`;
-    
-    labelBtn.addEventListener("click", async () => {
-        // ... Keep your exact same load chapter logic here ...
-        state.selectedTranslation = chapter.translation;
-        state.currentChapter = { chapter: chapter.chapter, verses: [] };
+    // 3. Populate list
+    chapters.forEach(chapter => {
+        const row = document.createElement("div");
+        row.className = "bookmark-row";
         
-        if (document.getElementById("translationSelect")) {
-            document.getElementById("translationSelect").value = chapter.translation;
-        }
-        
-        await loadChapter();
+        // We use data-attributes to store the chapter info so we don't 
+        // have to rely on complex event listener closures.
+        row.innerHTML = `
+            <button class="bookmark-label-btn" data-type="load">
+                ${chapter.book} ${chapter.chapter} (${chapter.translation})
+            </button>
+            <button class="bookmark-delete-btn" data-type="delete">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        `;
 
-        // Close out the modal panels
-        const authOverlay = document.getElementById("authOverlay");
-        if (authOverlay) {
-            authOverlay.classList.add("hidden");
-            document.getElementById("savedScreen").classList.add("hidden");
-            document.getElementById("appSection").classList.remove("hidden");
-            document.getElementById("authTitle").textContent = "Account!";
-            document.getElementById("closeSaved").classList.add("hidden");
-            document.getElementById("closeAuth").classList.remove("hidden");
-        }
+        // Store the actual chapter data on the row itself
+        row.dataset.chapterData = JSON.stringify(chapter);
+        savedChaptersContainer.appendChild(row);
     });
 
-    // 3. Create the dedicated delete "X" button
-    const deleteBtn = document.createElement("button");
-    deleteBtn.className = "bookmark-delete-btn";
-    deleteBtn.innerHTML = `<i class="fa-solid fa-xmark"></i>`;
-    deleteBtn.title = "Delete bookmark";
+    // 4. Single Event Listener (Event Delegation) attached to the container
+    // This solves the 'deaf button' problem and bubbling issues in one go.
+    savedChaptersContainer.onclick = async (event) => {
+        const btn = event.target.closest('button');
+        if (!btn) return;
+        
+        event.stopPropagation(); // Stops the modal from closing prematurely
 
-// Inside your loadSavedChaptersUI() loop in render.js
-deleteBtn.addEventListener("click", async (event) => {
-    event.stopPropagation(); // Stop row loading row selection frames from triggering
+        const row = btn.closest('.bookmark-row');
+        const chapter = JSON.parse(row.dataset.chapterData);
+        const type = btn.dataset.type;
 
-    if (confirm(`Are you sure you want to delete the bookmark for ${chapter.book} ${chapter.chapter}?`)) {
-        try {
-            // Clean abstraction layer call!
-            const data = await apiDeleteChapter({
-                translation: chapter.translation,
-                book_id: chapter.book_id,
-                chapter: chapter.chapter
-            });
+    // ... inside loadSavedChaptersUI() ...
+    if (type === 'load') {
+        // 1. Update State
+        state.selectedTranslation = chapter.translation;
+        state.currentChapter = { chapter: chapter.chapter, verses: [] };
+        state.book = { book: chapter.book, book_id: chapter.book_id };
+        
+        // 2. PERSISTENCE SINK: Save to localStorage immediately
+        localStorage.setItem("selectedTranslation", chapter.translation);
+        localStorage.setItem("selectedChapter", chapter.chapter);
+        localStorage.setItem("selectedBookId", chapter.book_id);        
+        // 3. UI Sync
+        const transSelect = document.getElementById("translationSelect");
+        if (transSelect) transSelect.value = chapter.translation;
+        const bookSelect = document.getElementById("bookSelect");
+        if (bookSelect) bookSelect.value = chapter.book_id;
+        const chapterSelect = document.getElementById("chapterSelect");
+        if (chapterSelect) chapterSelect.value = chapter.chapter;
+        
+        await loadChapter();
+        
+        // ... modal logic ...
 
-            if (data.success) {
-                // Smoothly slide row away out of the active DOM grid view list 
-                row.style.opacity = "0";
-                row.style.transform = "translateX(20px)";
-                setTimeout(() => {
-                    row.remove();
-                    if (savedChaptersContainer.children.length === 0) {
-                        savedChaptersContainer.innerHTML = "<p>No saved chapters found.</p>";
-                    }
-                }, 200);
-            } else {
-                alert(data.error || "Failed to remove bookmark.");
+            document.getElementById("savedScreen").classList.add("hidden");
+            document.getElementById("authOverlay").classList.add("hidden");
+            document.getElementById("appSection").classList.remove("hidden");
+            document.getElementById("authTitle").textContent = "Account";
+            document.getElementById("closeSaved").classList.add("hidden");
+            document.getElementById("closeAuth").classList.remove("hidden");
+
+        } else if (type === 'delete') {
+            // -- Delete Logic --
+            if (confirm(`Delete bookmark for ${chapter.book} ${chapter.chapter}?`)) {
+                const data = await apiDeleteChapter({
+                    translation: chapter.translation,
+                    book_id: chapter.book_id,
+                    chapter: chapter.chapter
+                });
+
+                if (data.success) {
+                    row.style.opacity = "0";
+                    row.style.transform = "translateX(20px)";
+                    setTimeout(() => {
+                        row.remove();
+                        if (savedChaptersContainer.children.length === 0) {
+                            savedChaptersContainer.innerHTML = "<p>No saved chapters found.</p>";
+                        }
+                    }, 200);
+                } else {
+                    alert(data.error || "Failed to remove bookmark.");
+                }
             }
-        } catch (error) {
-            console.error("Deletion interface handler error:", error);
-            alert("Something went wrong trying to delete this item. Check your console logs.");
         }
-    }
-});
-
-    // 4. Assemble the row pieces together
-    row.appendChild(labelBtn);
-    row.appendChild(deleteBtn);
-    savedChaptersContainer.appendChild(row);
-});
+    };
 }
 
 export async function loadSavedScoresUI() {

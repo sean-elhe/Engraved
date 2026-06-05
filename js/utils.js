@@ -11,7 +11,7 @@ export function getBookName() {
 }
 
 export function getChapter() {
-    return Number(document.getElementById("chapterSelect").value);
+    return state.currentChapter?.chapter || document.getElementById("chapterSelect")?.value;
 }
 
 export function fillDifficultyDropdown() {
@@ -55,4 +55,10 @@ export function showLoggedInUI() {
     appSection.classList.remove("hidden");
     authTitle.textContent = "Account!";
     pinInput.value = "";
+}
+
+export function savePreferences(book, chapter, translation) {
+    localStorage.setItem("selectedBook", book);
+    localStorage.setItem("selectedChapter", chapter);
+    localStorage.setItem("selectedTranslation", translation);
 }
