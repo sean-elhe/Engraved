@@ -2,7 +2,7 @@
 import { state, resetScore } from './state.js';
 import { getBookId, getBookName, getChapter, clearInputs, showLoggedInUI, showLoggedOutUI } from './utils.js';
 import { loadBooks, loadChapters, loadChapter, displayCurrentVerse, calculateScore, displayVerseWords, showInfoScreen,showScoreScreen, handleNext, loadSavedChaptersUI,setupVerseOrder, loadSavedScoresUI } from './render.js';
-import { apiLogin, apiSignup, apiLogout, apiSaveChapter, apiSaveScore } from './api.js';
+import { apiLogin, apiSignup, apiLogout, apiSaveChapter, apiSaveScore, apiCheckLogIn } from './api.js';
 
 // --- Dom Element Targets ---
 const loginBtn = document.getElementById("loginBtn");
@@ -487,13 +487,26 @@ addLongClickListener(openAuth, async (event) => {
     }
 }, 800);
 
-openAuth.addEventListener("click", () => {
+openAuth.addEventListener("click", async (func) => {
     if (isAuthLongPress) {
         isAuthLongPress = false;
         return;
     }
-    console.log("Standard quick tap: Show menu.");
-    authOverlay.classList.remove("hidden");
+    console.log("Standard quick tap: Show menu.")
+
+    const session = await apiCheckLogIn();
+
+
+    if (!session.loggedIn) {
+        authOverlay.classList.remove("hidden");
+        appSection.classList.add("hidden");
+    }
+
+    if (session.loggedIn) {
+        authOverlay.classList.remove("hidden");
+        appSection.classList.remove("hidden");
+        return;
+    }
 });
 
 closeSettings.addEventListener("click", () => settingsOverlay.classList.add("hidden"));
